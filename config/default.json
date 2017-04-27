@@ -1,5 +1,4 @@
 {
-  // Customer module configs 
   "google": {
     "clientId": "<client id de google>"
   },
