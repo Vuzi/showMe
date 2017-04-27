@@ -13,6 +13,9 @@
 		"no-unused-variable": [true],
 		"no-unused-expression": true,
 		"space-before-function-paren": [false],
-		"interface-name": [false]
+		"interface-name": [false],
+		"member-access": [
+			false
+		]
 	}
 }

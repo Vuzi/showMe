@@ -60,3 +60,7 @@ config/local.json
 
 # Image directory
 images
+
+# Generated front files
+bundle.js
+bundle.js.map

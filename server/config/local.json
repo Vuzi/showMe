@@ -1,12 +1,12 @@
 {
-  "google": {
-    "clientId": "<client id de google>"
-  },
+	"google": {
+		"clientId": "44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com"
+	},
 	"db": {
 		"config": {
 			"user": "postgres",
 			"database": "showme",
-			"password": "",
+			"password": "postgres",
 			"host": "localhost",
 			"port": 5432,
 			"max": 10,
