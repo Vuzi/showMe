@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>Please give me your google account</title>
+		<script src="https://apis.google.com/js/platform.js" async defer></script>
+		<meta name="google-signin-client_id" content="44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com">
+	</head>
+	<body>
+		<h1>Connect !</h1>
+		<div class="g-signin2" data-onsuccess="onSignIn"></div>
+		<h1>Connected users !</h1>
+		<pre id="userlist" >
+		</pre>
+		<script>
+			function onSignIn(googleUser) {
+				var profile = googleUser.getBasicProfile();
+				console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+				console.log('Name: ' + profile.getName());
+				console.log('Image URL: ' + profile.getImageUrl());
+				console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+		
+				console.log("Registering...")
+
+				fetch("/user/login", {
+					method: "POST",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					credentials: "same-origin",
+					body: JSON.stringify({
+						token : googleUser.getAuthResponse().id_token
+					})
+				}).then(function(response) {
+					var contentType = response.headers.get("content-type");
+					if(contentType && contentType.indexOf("application/json") !== -1) {
+						return response.json().then(function(json) {
+							console.log(json)
+						});
+					} else {
+						console.log("Oops, we haven't got JSON!");
+					}
+				});
+
+				const interval = setInterval(() => {
+					fetch("/user/list", {
+						credentials: "same-origin"
+					}).then(function(response) {
+						var contentType = response.headers.get("content-type");
+						if(contentType && contentType.indexOf("application/json") !== -1) {
+							return response.json().then(function(json) {
+								document.getElementById('userlist').innerHTML = JSON.stringify(json, null, 2)
+								window.clearInterval(interval)
+							});
+						} else {
+							document.getElementById('userlist').innerHTML = "Error"
+						}
+					});
+				}, 2000)
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,18 @@
+{
+  "extends": "tslint:recommended",
+  "rules": {
+		"quotemark": ["single"],
+    "semicolon": [false],
+    "indent": [	"tab"],
+		"trailing-comma": [false],
+		"one-line": [false],
+		"curly": false,
+		"object-literal-sort-keys": false,
+		"ordered-imports": [false],
+		"no-var-requires": true,
+		"no-unused-variable": [true],
+		"no-unused-expression": true,
+		"space-before-function-paren": [false],
+		"interface-name": [false]
+	}
+}
