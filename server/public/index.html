@@ -3,6 +3,43 @@
 	<head>
 		<meta charset="UTF-8" />
 		<title>Hello React!</title>
+
+		<!-- Font -->
+		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+		
+		<!-- TODO externalise -->
+		<style>
+			body {
+				background-image: url('img/congruent_pentagon.png');
+			}
+
+			.title, .login-card {
+				max-width: 700px;
+				margin: auto;
+			}
+
+			.title {
+				font-family: 'Oswald', sans-serif;
+				font-size: 130px;
+				font-weight: normal;
+			}
+
+			.title > .me {
+				font-weight: bold;
+				color: #002e7a
+			}
+
+			.login-card {
+				margin-bottom: 20px;
+			}
+
+			.login-card button {
+				margin: auto !important;
+				display: block !important;
+				cursor: pointer;
+			}
+
+		</style>
 	</head>
 	<body>
 		<div id="app"></div>
