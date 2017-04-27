@@ -55,5 +55,8 @@ jspm_packages/
 # dotenv environment variables file
 .env
 
-# local configuration
+# Local configuration
 config/local.json
+
+# Image directory
+images
