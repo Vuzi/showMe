@@ -5,6 +5,7 @@ import {Card, CardActions, CardHeader, CardMedia, CardText, CardTitle} from 'mat
 
 import FlatButton from 'material-ui/FlatButton'
 import GoogleLogin from 'react-google-login'
+import Snackbar from 'material-ui/Snackbar'
 
 export interface Props {
 	onDroppedFile: (file: File) => void
@@ -12,19 +13,24 @@ export interface Props {
 
 interface State {
 	isHovered: boolean
+	showError: boolean
 }
 
 export class UploadCard extends React.Component<Props, State> {
   constructor () {
     super()
     this.state = {
-      isHovered: false
+      isHovered: false,
+			showError: false
     }
   }
 
-	onDrop(acceptedFiles: File[]) {
-		console.log(acceptedFiles)
+	onDrop(acceptedFiles: File[], rejectedFiles: File[]) {
 		acceptedFiles.forEach(this.props.onDroppedFile)
+		this.setState({
+			isHovered : false,
+			showError: rejectedFiles.length > 0
+		})
 	}
 
 	onDragEnter() {
@@ -39,32 +45,44 @@ export class UploadCard extends React.Component<Props, State> {
 		})
 	}
 
+	hideError() {
+    this.setState({
+      showError: false
+    })
+	}
+
 	render() {
-		const style = {
-			border: "dashed 4px",
-			borderColor: this.state.isHovered ? 'lightGray' : '#c1c1c1',
+		const style: React.CSSProperties = {
+			border: 'dashed 4px',
+			borderColor: this.state.isHovered ? '#C1C1C1' : '#f7f7f7',
 			margin: 'auto',
 			marginBottom: '10px',
-			width: '500px',
+			maxWidth: '500px',
 			height: '250px',
 			borderRadius: '30px',
 			background: 'url(img/cloud.png)',
 			backgroundRepeat: 'no-repeat',
 			backgroundSize: 'initial',
-			backgroundPosition: 'center'
+			backgroundPosition: 'center',
+			cursor: 'pointer'
 		}
 
 		return <Card className="login-card">
-			<CardTitle title='Upload a file' subtitle='Drag &eamp; drop' />
+			<CardTitle title='Upload a file' subtitle='Drag &amp; drop' />
 			<CardText>
 				<Dropzone
+					accept='video/*,image/*'
 					onDrop={this.onDrop.bind(this)}
 					style={style}
 					onDragEnter={this.onDragEnter.bind(this)}
 					onDragLeave={this.onDragLeave.bind(this)}
-				>
-					<p>Try dropping some files here, or click to select files to upload.</p>
-				</Dropzone>
+				/>
+        <Snackbar
+          open={this.state.showError}
+          message='Only images and webm can be uploaded'
+          autoHideDuration={4000}
+          onRequestClose={this.hideError}
+        />
 			</CardText>
 		</Card>
 	}

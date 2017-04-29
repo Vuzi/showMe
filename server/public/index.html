@@ -5,12 +5,13 @@
 		<title>Hello React!</title>
 
 		<!-- Font -->
-		<link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-		
+		<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
+
 		<!-- TODO externalise -->
 		<style>
 			body {
-				background-image: url('img/congruent_pentagon.png');
+				background-image: url('img/greyzz.png');
+				/*background-image: url('img/congruent_pentagon.png');*/
 			}
 
 			.title, .login-card {
@@ -19,8 +20,8 @@
 			}
 
 			.title {
-				font-family: 'Oswald', sans-serif;
-				font-size: 130px;
+				font-family: 'Amatic SC', cursive;
+				font-size: 160px;
 				font-weight: normal;
 			}
 
@@ -38,7 +39,32 @@
 				display: block !important;
 				cursor: pointer;
 			}
+			
+			.uploadCardFile-enter {
+				opacity: 0.01;
+				transform: translateY(-300px) scale(0.8);
+			}
 
+			.uploadCardFile-enter.uploadCardFile-enter-active {
+				opacity: 1;
+				transform: translateX(0) scale(1);
+				transition-property: transform opacity;
+				transition-duration: 300ms;
+				transition-timing-function: ease-in;
+			}
+
+			.uploadCardFile-leave {
+				opacity: 1;
+				transform: translateX(0);
+			}
+
+			.uploadCardFile-leave.uploadCardFile-leave-active {
+				opacity: 0.01;
+				transform: translateX(300px);
+				transition-property: transform opacity;
+				transition-duration: 300ms;
+				transition-timing-function: ease-in;
+			}
 		</style>
 	</head>
 	<body>

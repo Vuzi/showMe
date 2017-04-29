@@ -6,30 +6,77 @@ import {Card, CardActions, CardHeader, CardMedia, CardText, CardTitle} from 'mat
 
 import FlatButton from 'material-ui/FlatButton'
 import GoogleLogin from 'react-google-login'
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField'
 import {UploadStateImage} from '../../redux/reducers'
 
 export interface Props {
-	image: UploadStateImage
+	image: UploadStateImage,
+	onRemove: () => void
 }
 
 export class UploadFileCard extends React.Component<Props, {}> {
 	render() {
+		const {file, image} = this.props.image
+    const fileURL = window.URL.createObjectURL(file)
 
-		const style = {
-			width: '700px',
-			margin: 'auto'
+		const cardStyle: React.CSSProperties = {
+			marginTop: '15px'
 		}
 
-		return <Card style={style}>
-			<CardTitle title='Upload a file' subtitle='Drag &eamp; drop' />
-			<CardMedia>
+		let media;
 
-      	<FileImage file={this.props.image.file} />
-			</CardMedia>
-			<CardText>
-				{ `File name: ${this.props.image.file.name}` }
-			</CardText>
-		</Card>
+		if (/^video/.test(file.type)) {
+			media = <video controls>
+								<source src={fileURL} type={file.type} />
+							</video>
+		} else {
+			const imageBackgroundStyle: React.CSSProperties = {
+				backgroundImage: 'url(img/footer_lodyas.png)',
+				textAlign: 'center'
+			}
+
+			const imageStyle: React.CSSProperties = {
+				marginBottom: '-4px',
+				maxWidth: '100%',
+				maxHeight: '450px'
+			}
+
+			media = <div style={imageBackgroundStyle} >
+				<img src={fileURL} style={imageStyle} />
+			</div>
+		}
+
+		return <div>
+				<Card style={cardStyle}>
+				<CardTitle title={image.title} subtitle={file.type} />
+				<CardMedia>
+					{ media }
+				</CardMedia>
+				<CardText>
+					<TextField
+						defaultValue={image.title}
+						floatingLabelText="Image title"
+						fullWidth={true}
+					/><br/>
+					<TextField
+						defaultValue={image.filename}
+						floatingLabelText="Image URL"
+						fullWidth={true}
+					/><br/>
+				<TextField
+					floatingLabelText="Image description"
+					multiLine={true}
+					fullWidth={true}
+					rows={2}
+				/><br />
+				</CardText>
+				<CardActions >
+					<RaisedButton label="Upload" />
+					<FlatButton label="Remove" onClick={() => this.props.onRemove()} />
+				</CardActions>
+			</Card>
+		</div>
 	}
 
 }

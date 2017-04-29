@@ -3,10 +3,12 @@ import * as uuid from 'uuid'
 import {
 	Action,
 	uploadAdd,
+	uploadRemove,
 } from '../../redux/actions'
 import {LoginState, UploadState} from '../../redux/reducers'
 
 import {Image} from '../../models/image'
+import {UploadStateImage} from '../../redux/reducers'
 import {Uploader} from './uploader'
 import {connect} from 'react-redux'
 
@@ -25,14 +27,17 @@ const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
 				creation: now,
 				modification: now,
 				description: '',
-				filename: '',
+				filename: file.name,
 				title: file.name,
 				tags: [],
-				url: file.name
+				url: ''
 			}
 
       dispatch(uploadAdd(newImage, file))
-    }
+    },
+		onRemoveImage: (image: UploadStateImage) => {
+      dispatch(uploadRemove(image.image))
+		}
   }
 }
 

@@ -12,6 +12,7 @@ import {UploadStateImage} from '../../redux/reducers'
 export interface Props {
 	images: UploadStateImage[]
 	onDroppedFile: (file: File) => void
+	onRemoveImage: (image: UploadStateImage) => void
 }
 
 export class Uploader extends React.Component<Props, {}> {
@@ -19,7 +20,7 @@ export class Uploader extends React.Component<Props, {}> {
 
 		return <div>
 				<UploadCard onDroppedFile={this.props.onDroppedFile} />
-				<UploadFileCards images={this.props.images} />
+				<UploadFileCards images={this.props.images} onRemoveImage={this.props.onRemoveImage} />
 			</div>
 	}
 
