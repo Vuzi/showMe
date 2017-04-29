@@ -13,6 +13,7 @@ export interface Props {
 	images: UploadStateImage[]
 	onDroppedFile: (file: File) => void
 	onRemoveImage: (image: UploadStateImage) => void
+	onUploadImage: (image: UploadStateImage) => void
 }
 
 export class Uploader extends React.Component<Props, {}> {
@@ -20,7 +21,11 @@ export class Uploader extends React.Component<Props, {}> {
 
 		return <div>
 				<UploadCard onDroppedFile={this.props.onDroppedFile} />
-				<UploadFileCards images={this.props.images} onRemoveImage={this.props.onRemoveImage} />
+				<UploadFileCards
+					images={this.props.images}
+					onRemoveImage={this.props.onRemoveImage}
+					onUploadImage={this.props.onUploadImage}
+				/>
 			</div>
 	}
 

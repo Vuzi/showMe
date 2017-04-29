@@ -4,6 +4,7 @@ import {
 	Action,
 	uploadAdd,
 	uploadRemove,
+	uploadStart,
 } from '../../redux/actions'
 import {LoginState, UploadState} from '../../redux/reducers'
 
@@ -27,17 +28,20 @@ const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
 				creation: now,
 				modification: now,
 				description: '',
-				filename: file.name,
+				filename: '', // Create by the server
 				title: file.name,
 				tags: [],
-				url: ''
+				url: file.name
 			}
 
       dispatch(uploadAdd(newImage, file))
     },
 		onRemoveImage: (image: UploadStateImage) => {
       dispatch(uploadRemove(image.image))
-		}
+		},
+		onUploadImage: (image: UploadStateImage) => {
+      dispatch(uploadStart(image.image, image.file))
+		},
   }
 }
 

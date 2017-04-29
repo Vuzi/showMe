@@ -13,6 +13,7 @@ import {UploadStateImage} from '../../redux/reducers'
 export interface Props {
 	images: UploadStateImage[]
 	onRemoveImage: (image: UploadStateImage) => void
+	onUploadImage: (image: UploadStateImage) => void
 }
 
 export class UploadFileCards extends React.Component<Props, {}> {
@@ -36,7 +37,17 @@ export class UploadFileCards extends React.Component<Props, {}> {
 			const onRemove = () => {
 				this.props.onRemoveImage(image)
 			}
-			return <UploadFileCard image={image} onRemove={onRemove} key={image.image.id} />
+
+			const onUpload = () => {
+				this.props.onUploadImage(image)
+			}
+
+			return <UploadFileCard
+								image={image}
+								onRemove={onRemove}
+								onUpload={onUpload}
+								key={image.image.id}
+							/>
 		})
 
 		if (fileCards.length > 1) {

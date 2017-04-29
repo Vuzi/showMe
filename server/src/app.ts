@@ -8,7 +8,9 @@ import * as session from 'express-session'
 
 import { RejectionError, reject } from './utils/error'
 
+import categoryEndpoint from './routes/category'
 import graphqlEndpoint from './routes/graphql'
+import imageEndpoint from './routes/image'
 import loginEndpoint from './routes/login'
 
 const app = express()
@@ -28,8 +30,10 @@ app.use(session({
 }))
 
 // Use graphql endpoint
-graphqlEndpoint(app)
+// graphqlEndpoint(app)
 loginEndpoint(app)
+imageEndpoint(app)
+categoryEndpoint(app)
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
