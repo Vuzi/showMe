@@ -16,6 +16,12 @@
 		"interface-name": [false],
 		"member-access": [
 			false
+		],
+		"align": [
+			false
+		],
+		"no-console": [
+			false
 		]
 	}
 }

@@ -1,0 +1,154 @@
+import {
+	Action,
+	LOGIN,
+	LOGIN_FAILED,
+	LOGOUT,
+	UPLOAD_ADD,
+	UPLOAD_FAILED,
+	UPLOAD_REMOVE,
+	UPLOAD_START,
+	UPLOAD_SUCCESS,
+	UPLOAD_UPDATE,
+} from './actions'
+
+import { Image } from '../models/image'
+import { User } from '../models/user'
+import { combineReducers } from 'redux'
+
+export interface LoginState {
+	connected: boolean
+	user?: User
+	error?: any // TODO better type
+}
+
+export function login(state: LoginState = { connected: false }, action: Action<any>): LoginState {
+  switch (action.type) {
+		case LOGIN:
+			return {
+				connected : true,
+				user: action.value,
+				error: undefined as any
+			}
+
+		case LOGIN_FAILED:
+			return {
+				connected : false,
+				user: undefined,
+				error: action.value
+			}
+
+		case LOGOUT:
+			return {
+				connected : false,
+				user: undefined,
+				error: undefined as any
+			}
+
+		default:
+			return state
+	}
+}
+
+export interface UploadStateImage {
+	image: Image          // The image itself
+	file: File            // File to upload
+	percentUpload: number // Upload progression
+	uploaded: boolean     // If the image has been uploaded
+	uploading: boolean    // If the image is being uploaded
+	error?: any           // Upload error
+}
+
+export interface UploadState {
+	images: UploadStateImage[] // All the images to upload
+}
+
+export function upload(state: UploadState = { images: [] }, action: Action<any>): UploadState {
+  switch (action.type) {
+		case UPLOAD_ADD:
+			return {
+				images: state.images.concat([{
+					image: action.value.image,
+					file: action.value.file,
+					percentUpload: 0,
+					uploaded: false,
+					uploading: false
+				}])
+			}
+
+		case UPLOAD_REMOVE:
+			return {
+				images: state.images.filter((s) => {
+					// Ignore images being uploaded
+					return !(s.image.id === action.value.id && !s.uploading)
+				})
+			}
+
+		case UPLOAD_START:
+			return {
+				images: state.images.map((s) => {
+					// Ignore images being uploaded or already uploaded
+					if (s.image.id === action.value.id && !s.uploading && !s.uploaded)
+						return {
+							...s,
+							percentUpload: 0,
+							uploading: true,
+							error: undefined
+						}
+					else
+						return s
+				})
+			}
+
+		case UPLOAD_UPDATE:
+			return {
+				images: state.images.map((s) => {
+					if (s.image.id === action.value.image.id && s.uploading)
+						return {
+							...s,
+							percentUpload: action.value.percent
+						}
+					else
+						return s
+				})
+			}
+
+		case UPLOAD_SUCCESS:
+			return {
+				images: state.images.map((s) => {
+					if (s.image.id === action.value.id && s.uploading)
+						return {
+							...s,
+							uploading: false,
+							uploaded: true
+						}
+					else
+						return s
+				})
+			}
+
+		case UPLOAD_FAILED:
+			return {
+				images: state.images.map((s) => {
+					if (s.image.id === action.value.image.id && s.uploading)
+						return {
+							...s,
+							uploading: false,
+							uploaded: false,
+							error: action.value.error
+						}
+					else
+						return s
+				})
+			}
+
+		default:
+			return state
+	}
+}
+
+const app = combineReducers({
+	login,
+	upload
+})
+
+export default app

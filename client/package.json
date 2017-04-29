@@ -11,9 +11,17 @@
   "dependencies": {
     "@types/react": "^15.0.23",
     "@types/react-dom": "^15.5.0",
+    "@types/react-dropzone": "0.0.32",
+    "@types/react-redux": "^4.4.40",
+    "@types/uuid": "^2.0.29",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
-    "react-google-login": "^2.8.9"
+    "react-dropzone": "^3.13.1",
+    "react-google-login": "^2.8.9",
+    "react-redux": "^5.0.4",
+    "redux-observable": "^0.14.1",
+    "redux-thunk": "^2.2.0",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "awesome-typescript-loader": "^3.1.2",

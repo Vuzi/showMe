@@ -16,7 +16,7 @@ export default function(app: Express): void {
 	const storagePath = __dirname + '/../../images/'
 
 	// Download an image
-	app.get('/file/raw/:filename', (req, res, next) => {
+	app.get('/image/raw/:filename', (req, res, next) => {
 		ImageService.get(req.params.filename)
 		.then((image) => {
 			// Make static ?
