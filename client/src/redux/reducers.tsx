@@ -1,9 +1,14 @@
+import { combineReducers } from 'redux'
+import { Image } from '../models/image'
+import { User } from '../models/user'
 import {
 	Action,
 	LOGIN,
+	LOGIN_SUCCESS,
 	LOGIN_FAILED,
 	LOGOUT,
 	UPLOAD_ADD,
+	UPLOAD_EDIT,
 	UPLOAD_FAILED,
 	UPLOAD_REMOVE,
 	UPLOAD_START,
@@ -11,21 +16,27 @@ import {
 	UPLOAD_UPDATE,
 } from './actions'
 
-import { Image } from '../models/image'
-import { User } from '../models/user'
-import { combineReducers } from 'redux'
-
 export interface LoginState {
 	connected: boolean
+	connecting: boolean
 	user?: User
 	error?: any // TODO better type
 }
 
-export function login(state: LoginState = { connected: false }, action: Action<any>): LoginState {
+export function login(state: LoginState = {connected: false, connecting : false}, action: Action<any>): LoginState {
   switch (action.type) {
 		case LOGIN:
 			return {
+				connected : false,
+				connecting : true,
+				user: undefined,
+				error: undefined as any
+			}
+
+		case LOGIN_SUCCESS:
+			return {
 				connected : true,
+				connecting : false,
 				user: action.value,
 				error: undefined as any
 			}
@@ -33,6 +44,7 @@ export function login(state: LoginState = { connected: false }, action: Action<a
 		case LOGIN_FAILED:
 			return {
 				connected : false,
+				connecting : false,
 				user: undefined,
 				error: action.value
 			}
@@ -40,6 +52,7 @@ export function login(state: LoginState = { connected: false }, action: Action<a
 		case LOGOUT:
 			return {
 				connected : false,
+				connecting : false,
 				user: undefined,
 				error: undefined as any
 			}
@@ -80,6 +93,19 @@ export function upload(state: UploadState = { images: [] }, action: Action<any>)
 				images: state.images.filter((s) => {
 					// Ignore images being uploaded
 					return !(s.image.id === action.value.id && !s.uploading)
+				})
+			}
+
+		case UPLOAD_EDIT:
+			return {
+				images: state.images.map((s) => {
+					if (s.image.id === action.value.id && !s.uploading && !s.uploaded)
+						return {
+							...s,
+							image: action.value // Update the image
+						}
+					else
+						return s
 				})
 			}
 

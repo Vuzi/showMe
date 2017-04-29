@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<title>Hello React!</title>
+		<title>Show Me | Image uploader</title>
 
 		<!-- Font -->
 		<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
@@ -12,6 +12,7 @@
 			body {
 				background-image: url('img/greyzz.png');
 				/*background-image: url('img/congruent_pentagon.png');*/
+				padding-bottom: 40px;
 			}
 
 			.title, .login-card {
@@ -61,6 +62,19 @@
 			.uploadCardFile-leave.uploadCardFile-leave-active {
 				opacity: 0.01;
 				transform: translateX(300px);
+				transition-property: transform opacity;
+				transition-duration: 300ms;
+				transition-timing-function: ease-in;
+			}
+			
+			.uploadCardUpload-enter {
+				opacity: 0.01;
+				transform: scale(0.6);
+			}
+
+			.uploadCardUpload-enter.uploadCardUpload-enter-active {
+				opacity: 1;
+				transform: scale(1);
 				transition-property: transform opacity;
 				transition-duration: 300ms;
 				transition-timing-function: ease-in;

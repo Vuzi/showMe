@@ -1,11 +1,10 @@
+import * as config from 'config'
 import * as GoogleAuth from 'google-auth-library'
 import * as pg from 'pg'
-
-import { User } from '../models/user'
 import db from './postgre'
+import { User } from '../models/user'
 
-// TODO externalise
-const clientId = '44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
+const clientId = config.get('google.clientId')
 
 /**
  * List all the users in the database

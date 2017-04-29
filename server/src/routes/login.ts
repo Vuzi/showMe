@@ -1,22 +1,19 @@
-import * as CategoryService from '../services/categoryService'
-import * as GoogleAuth from 'google-auth-library'
-import * as ImageService from '../services/imageService'
-import * as UserService from '../services/userService'
 import * as config from 'config'
+import { Express } from 'express'
 import * as fs from 'fs'
+import * as GoogleAuth from 'google-auth-library'
 import * as mime from 'mime-types'
 import * as path from 'path'
 import * as sanitizeFilename from 'sanitize-filename'
 import * as uuid from 'uuid'
-
 import { Category } from '../models/category'
-import { Express } from 'express'
 import { Image } from '../models/image'
 import { User } from '../models/user'
+import * as CategoryService from '../services/categoryService'
+import * as ImageService from '../services/imageService'
+import * as UserService from '../services/userService'
 import { reject } from '../utils/error'
 
-// TODO externalise
-const clientId = config.get('google.clientId')
 
 // Auth middleware
 export function needAuth(req: any, res: any, next: any) {
@@ -30,10 +27,10 @@ export default function (app: Express): void {
 
 	// Login endpoint
 	app.post('/user/login', (req, res, next) => {
-
 		const token = req.body.token;
 
 		if (token) {
+			// TODO limit to some users
 			UserService.register(token).then((user: User) => {
 				if (req.session) {
 					req.session.connected = true;
@@ -56,6 +53,11 @@ export default function (app: Express): void {
 		}
 
 		res.json({ disconnected: true })
+	})
+
+	app.get('/user/me', needAuth, (req, res, next) => {
+		// Don't bother looking into the database
+		res.json(req.session.user)
 	})
 
 	// List all the users

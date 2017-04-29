@@ -1,15 +1,21 @@
-import * as Dropzone from 'react-dropzone'
-import * as React from 'react'
-
-import {Card, CardActions, CardHeader, CardMedia, CardText, CardTitle} from 'material-ui/Card'
-
+import {
+	Card,
+	CardActions,
+	CardHeader,
+	CardMedia,
+	CardText,
+	CardTitle
+	} from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
-import GoogleLogin from 'react-google-login'
-import {LoginState} from '../../redux/reducers'
 import Snackbar from 'material-ui/Snackbar'
+import * as React from 'react'
+import * as Dropzone from 'react-dropzone'
+import GoogleLogin from 'react-google-login'
+import { Redirect } from 'react-router-dom'
+import { LoginState } from '../../redux/reducers'
 
 export interface Props {
-	onLogin: () => void
+	onLogin: (token: string) => void
 	login: LoginState
 }
 
@@ -25,6 +31,17 @@ export class ConnectCard extends React.Component<Props, State> {
     }
   }
 
+	componentWillReceiveProps(props: Props) {
+		if (props.login.error)
+			this.showError()
+	}
+
+	showError() {
+    this.setState({
+      showError: true
+    })
+	}
+
 	hideError() {
     this.setState({
       showError: false
@@ -32,26 +49,38 @@ export class ConnectCard extends React.Component<Props, State> {
 	}
 
 	responseGoogle(response: any) {
-		console.log(response);
+		this.props.onLogin(response.tokenId)
 	}
 
 	render() {
-
-		return <Card className="login-card">
-			<CardTitle title="Show me some pixel" titleColor='grey' />
-			<CardText style={{ textAlign: 'center' }}>
-				You need to be logged in to upload images
-			</CardText>
-
-			<CardText>
-				<GoogleLogin
-					clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
-					buttonText="Login with Google"
-					onSuccess={(event: any) => this.responseGoogle(event)}
-					onFailure={(event: any) => this.responseGoogle(event)}
+		if (this.props.login.connected)
+			return <Redirect to={{ pathname: '/upload' }} />
+		else
+			return <Card className="login-card">
+				<CardTitle titleColor='grey' />
+				<CardText style={{ textAlign: 'center' }}>
+					You need to be logged in to upload images
+				</CardText>
+				<CardText style={{ paddingBottom: '40px'}}>
+					<GoogleLogin
+						disabled={this.props.login.connecting}
+						clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
+						buttonText="Login with Google"
+						onSuccess={(event: any) => this.responseGoogle(event)}
+						onFailure={() => this.showError()}
+					/>
+				</CardText>
+				<Snackbar
+					open={this.state.showError}
+					message={
+						this.props.login.error ?
+							'Login failed... Something went wrong server-side!' :
+							'Login failed... Did you accepted the app?'
+					}
+					autoHideDuration={7000}
+					onRequestClose={() => this.hideError()}
 				/>
-			</CardText>
-		</Card>
+			</Card>
 	}
 
 }

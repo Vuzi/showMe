@@ -1,8 +1,16 @@
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
 import * as injectTapEventPlugin from 'react-tap-event-plugin'
-
 import { applyMiddleware, createStore } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+import ConnectApp from './components/connect/connectApp'
+import { Title } from './components/title'
+import UploaderApp from './components/upload/uploaderApp'
+import { Image } from './models/image'
+import rootReducer from './redux/reducers'
 import {
   uploadAdd,
   uploadFailed,
@@ -11,16 +19,6 @@ import {
   uploadSuccess,
   uploadUpdate,
 } from './redux/actions'
-
-import { Image } from './models/image'
-import { Login } from './components/login'
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
-import { Provider } from 'react-redux'
-import { Title } from './components/title'
-import { Upload } from './components/upload'
-import UploaderApp from './components/upload/uploaderApp'
-import rootReducer from './redux/reducers'
-import thunkMiddleware from 'redux-thunk'
 
 // Needed for onTouchTap
 // http://stackoverflow.com/a/34015469/988941
@@ -31,14 +29,27 @@ const store = createStore(
   applyMiddleware(thunkMiddleware)
 )
 
+const Login = () => (
+  <Provider store={store}>
+    <ConnectApp />
+  </Provider>
+)
+
+const Upload = () => (
+  <Provider store={store}>
+    <UploaderApp />
+  </Provider>
+)
+
 const App = () => (
   <MuiThemeProvider>
-    <div>
-      <Title />
-      <Provider store={store}>
-        <UploaderApp />
-      </Provider>
-    </div>
+    <Router>
+      <div>
+        <Title />
+        <Route path='/upload' exact component={ Upload }/>
+        <Route path='/' exact component={ Login }/>
+      </div>
+    </Router>
   </MuiThemeProvider>
 );
 

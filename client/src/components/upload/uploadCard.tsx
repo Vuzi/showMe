@@ -1,11 +1,18 @@
-import * as Dropzone from 'react-dropzone'
-import * as React from 'react'
-
-import {Card, CardActions, CardHeader, CardMedia, CardText, CardTitle} from 'material-ui/Card'
-
+import {
+	Card,
+	CardActions,
+	CardHeader,
+	CardMedia,
+	CardText,
+	CardTitle
+	} from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
-import GoogleLogin from 'react-google-login'
 import Snackbar from 'material-ui/Snackbar'
+import * as React from 'react'
+import * as Dropzone from 'react-dropzone'
+import GoogleLogin from 'react-google-login'
+
+
 
 export interface Props {
 	onDroppedFile: (file: File) => void
@@ -70,13 +77,18 @@ export class UploadCard extends React.Component<Props, State> {
 		return <Card className="login-card">
 			<CardTitle title='Upload a file' subtitle='Drag &amp; drop' />
 			<CardText>
-				<Dropzone
-					accept='video/*,image/*'
-					onDrop={this.onDrop.bind(this)}
-					style={style}
-					onDragEnter={this.onDragEnter.bind(this)}
-					onDragLeave={this.onDragLeave.bind(this)}
-				/>
+				<div
+					onMouseOver={() => this.onDragEnter()}
+					onMouseOut={() => this.onDragLeave()}
+				>
+					<Dropzone
+						accept='video/*,image/*'
+						onDrop={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
+						style={style}
+						onDragEnter={() => this.onDragEnter()}
+						onDragLeave={() => this.onDragLeave()}
+					/>
+				</div>
         <Snackbar
           open={this.state.showError}
           message='Only images and webm can be uploaded'

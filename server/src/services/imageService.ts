@@ -1,9 +1,8 @@
 import * as pg from 'pg'
-
+import db from './postgre'
 import { Category } from '../models/category'
 import { Image } from '../models/image'
 import { User } from '../models/user'
-import db from './postgre'
 
 export function create(user: User, image: Image): Promise<Image> {
 
@@ -12,10 +11,9 @@ export function create(user: User, image: Image): Promise<Image> {
 		return client.query(`
 			SELECT *
 			FROM image
-			WHERE title = $1
+			WHERE url = $1
 		`, [
-			image.title,
-			user.id
+			image.url
 		]).then((value) => {
 			// Already present
 			if (value.rowCount > 0)
@@ -56,14 +54,14 @@ export function create(user: User, image: Image): Promise<Image> {
 	})
 }
 
-export function get(title: string): Promise<Image> {
+export function get(url: string): Promise<Image> {
 	// TODO handle private picture ?
 	return db.pool.query(`
 		SELECT *
 		FROM image
-		WHERE title = $1
+		WHERE url = $1
 	`, [
-		title
+		url
 	]).then((res) => res.rows[0])
 }
 
@@ -78,7 +76,6 @@ export function update(image: Image): Promise<Image> {
 export function remove(image: Image): Promise<Image> {
 	return null // TODO
 }
-
 
 // TODO tester upload d'image
 // TODO faire le service d'image (creation + truc)

@@ -12,10 +12,12 @@ export interface Action<T> {
  * Actions types
  */
 export const LOGIN: EventType = 'LOGIN'
+export const LOGIN_SUCCESS: EventType = 'LOGIN_SUCCESS'
 export const LOGIN_FAILED: EventType = 'LOGIN_FAILED'
 export const LOGOUT: EventType = 'LOGOUT'
 
 export const UPLOAD_ADD: EventType = 'UPLOAD_ADD'
+export const UPLOAD_EDIT: EventType = 'UPLOAD_EDIT'
 export const UPLOAD_REMOVE: EventType = 'UPLOAD_REMOVE'
 export const UPLOAD_START: EventType = 'UPLOAD_START'
 export const UPLOAD_UPDATE: EventType = 'UPLOAD_UPDATE'
@@ -30,9 +32,41 @@ export const UPLOAD_FAILED: EventType = 'UPLOAD_FAILED'
  * Actions creator
  */
 
-export function login(user: User): Action<User> {
+export function login(token: string): any {
+  return (dispatch: any) => {
+		// Login stated
+    dispatch({
+			type: LOGIN
+		})
+
+		fetch('/user/login', {
+			method: 'POST',
+  		credentials: 'same-origin',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ token })
+		})
+		.then((res) => {
+			return res.json().then((json) => {
+				return { json, res }
+			})
+		})
+		.then((req) => {
+			if (req.res.status === 200)
+				dispatch(loginSuccess(req.json as User)) // TODO fix ts
+			else
+				dispatch(loginFailed(req.json))
+		})
+		.catch((err) => {
+			dispatch(loginFailed(err))
+		})
+	}
+}
+
+export function loginSuccess(user: User): Action<User> {
 	return {
-		type: LOGIN,
+		type: LOGIN_SUCCESS,
 		value: user
 	}
 }
@@ -67,12 +101,15 @@ export function uploadRemove(image: Image): Action<Image> {
 		value: image
 	}
 }
+export function uploadEdit(image: Image): Action<Image> {
+	return {
+		type: UPLOAD_EDIT,
+		value: image
+	}
+}
 
 export function uploadStart(image: Image, file: File): any {
-	console.log('uploadStart called')
-
   return (dispatch: any) => {
-		console.log('uploadStart internal called')
 		// Upload stated
     dispatch({
 			type: UPLOAD_START,
@@ -81,44 +118,24 @@ export function uploadStart(image: Image, file: File): any {
 
 		// Use XMLHttpRequest because fetch don't handle progress yet
 		const xhr = new XMLHttpRequest()
+		xhr.withCredentials = true
 
 		xhr.upload.addEventListener('progress', (event) => {
-			const progress = 100 - (event.loaded / event.total * 100);
+			const progress = event.loaded / event.total * 100;
 			dispatch(uploadUpdate(image, progress))
 		}, false);
 
 		xhr.onreadystatechange = (event) => {
 			if (xhr.readyState === 4) {
-			console.log('uploadStart done')
 				if (xhr.status === 200)
 					dispatch(uploadSuccess(image))
 				else
-					dispatch(uploadFailed(image, { message : 'TODO' })) // TODO get error
+					dispatch(uploadFailed(image, JSON.parse(xhr.responseText))) // TODO get error ? test
 			}
 		}
 
-		xhr.open('POST', `/image/${image.url}`, true);
+		xhr.open('POST', `/image/${image.url}`, true); // TODO URL encode
 		xhr.send(file);
-
-		/*
-		return fetch(`/image/${image.url}`, {
-			method: 'POST',
-			headers: {
-				"Content-Type": file.type
-			},
-			body: file
-		})
-		.then((response) => response.json())
-		.then((json) => {
-			// Upload done
-			console.log(json)
-			dispatch(uploadSuccess(image))
-		})
-		.catch((err) => {
-			// Upload failed
-			console.log(err)
-			dispatch(uploadFailed(image, err))
-		})*/
   }
 }
 

@@ -1,24 +1,31 @@
-import * as Dropzone from 'react-dropzone'
-import * as React from 'react'
-
-import {Card, CardActions, CardHeader, CardMedia, CardText, CardTitle} from 'material-ui/Card'
-
-import {CSSTransitionGroup} from 'react-transition-group'
+import {
+	Card,
+	CardActions,
+	CardHeader,
+	CardMedia,
+	CardText,
+	CardTitle
+	} from 'material-ui/Card'
 import FlatButton from 'material-ui/FlatButton'
-import GoogleLogin from 'react-google-login'
 import RaisedButton from 'material-ui/RaisedButton'
-import {UploadFileCard} from './uploadFileCard'
-import {UploadStateImage} from '../../redux/reducers'
+import * as React from 'react'
+import * as Dropzone from 'react-dropzone'
+import GoogleLogin from 'react-google-login'
+import { CSSTransitionGroup } from 'react-transition-group'
+import { UploadFileCard } from './uploadFileCard'
+import { Image } from '../../models/image'
+import { UploadStateImage } from '../../redux/reducers'
 
 export interface Props {
 	images: UploadStateImage[]
-	onRemoveImage: (image: UploadStateImage) => void
-	onUploadImage: (image: UploadStateImage) => void
+	onRemoveImage: (image: Image) => void
+	onUploadImage: (image: Image, file: File) => void
+	onEditImage: (image: Image) => void
 }
 
 export class UploadFileCards extends React.Component<Props, {}> {
 	onClear() {
-		this.props.images.forEach((i) => this.props.onRemoveImage(i))
+		this.props.images.forEach((i) => this.props.onRemoveImage(i.image))
 	}
 
 	render() {
@@ -29,23 +36,27 @@ export class UploadFileCards extends React.Component<Props, {}> {
 		}
 
 		const lastCardStyle: React.CSSProperties = {
-			marginTop: '15px',
-			marginBottom: '40px'
+			marginTop: '15px'
 		}
 
 		const fileCards = this.props.images.map((image) => {
 			const onRemove = () => {
-				this.props.onRemoveImage(image)
+				this.props.onRemoveImage(image.image)
 			}
 
 			const onUpload = () => {
-				this.props.onUploadImage(image)
+				this.props.onUploadImage(image.image, image.file)
+			}
+
+			const onChangeImage = (newImage: Image) => {
+				this.props.onEditImage(newImage)
 			}
 
 			return <UploadFileCard
 								image={image}
 								onRemove={onRemove}
 								onUpload={onUpload}
+								onChangeImage={onChangeImage}
 								key={image.image.id}
 							/>
 		})

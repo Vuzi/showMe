@@ -1,17 +1,16 @@
+import { connect } from 'react-redux'
 import * as uuid from 'uuid'
-
+import { Uploader } from './uploader'
+import { Image } from '../../models/image'
 import {
 	Action,
 	uploadAdd,
+	uploadEdit,
 	uploadRemove,
-	uploadStart,
-} from '../../redux/actions'
-import {LoginState, UploadState} from '../../redux/reducers'
-
-import {Image} from '../../models/image'
-import {UploadStateImage} from '../../redux/reducers'
-import {Uploader} from './uploader'
-import {connect} from 'react-redux'
+	uploadStart
+	} from '../../redux/actions'
+import { LoginState, UploadState } from '../../redux/reducers'
+import { UploadStateImage } from '../../redux/reducers'
 
 const mapStateToProps = (state: { upload: UploadState, login: LoginState }) => {
   return {
@@ -36,11 +35,14 @@ const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
 
       dispatch(uploadAdd(newImage, file))
     },
-		onRemoveImage: (image: UploadStateImage) => {
-      dispatch(uploadRemove(image.image))
+		onRemoveImage: (image: Image) => {
+      dispatch(uploadRemove(image))
 		},
-		onUploadImage: (image: UploadStateImage) => {
-      dispatch(uploadStart(image.image, image.file))
+		onUploadImage: (image: Image, file: File) => {
+      dispatch(uploadStart(image, file))
+		},
+		onEditImage: (image: Image) => {
+      dispatch(uploadEdit(image))
 		},
   }
 }

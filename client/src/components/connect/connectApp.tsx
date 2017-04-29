@@ -1,11 +1,11 @@
+import { connect } from 'react-redux'
+import { LoginState, UploadState } from '../../redux/reducers'
+import { ConnectCard } from '../connect/connectCard'
 import {
 	Action,
 	login,
 } from '../../redux/actions'
-import {LoginState, UploadState} from '../../redux/reducers'
 
-import {ConnectCard} from '../connect/connectCard'
-import {connect} from 'react-redux'
 
 const mapStateToProps = (state: { upload: UploadState, login: LoginState }) => {
   return {
@@ -15,10 +15,8 @@ const mapStateToProps = (state: { upload: UploadState, login: LoginState }) => {
 
 const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
   return {
-    onLogin: () => {
-			// TODO create user here
-
-      // dispatch(login())
+    onLogin: (token: string) => {
+      dispatch(login(token))
     }
 	}
 }
