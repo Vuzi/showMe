@@ -141,7 +141,7 @@ export class UploadFileCard extends React.Component<Props, {}> {
 			// Construct the file path..
 			const location = window.location
 			const port = location.port === '80' ? '' : `:${location.port}`
-			const url = `${location.protocol}//${location.hostname}${port}/image/raw/${image.url}`
+			const url = `${location.protocol}//${location.hostname}${port}/api/image/raw/${image.url}`
 			// TODO deplace in some utils file
 
 			textFieldUrl = <div key={`url-${image.id}`}>
