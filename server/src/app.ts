@@ -1,26 +1,22 @@
 import * as bodyParser from 'body-parser'
 import * as cookieParser from 'cookie-parser'
-import * as express from 'express'
-import * as lessMiddleware from 'less-middleware'
+import * as Express from 'express'
+import * as session from 'express-session'
+import * as fs from 'fs'
 import * as logger from 'morgan'
 import * as path from 'path'
-import * as session from 'express-session'
-
-import { RejectionError, reject } from './utils/error'
-
 import categoryEndpoint from './routes/category'
-import graphqlEndpoint from './routes/graphql'
 import imageEndpoint from './routes/image'
 import loginEndpoint from './routes/login'
+import { reject } from './utils/error'
 
-const app = express()
+const app = Express()
 
-// uncomment after placing your favicon in /public
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(express.static(path.join(__dirname, '../public')))
+app.use(Express.static(path.join(__dirname, '../public')))
 app.use(session({
 	secret: 'thisismylittlesecret!',
 	cookie: { maxAge: 60000 },
@@ -29,11 +25,29 @@ app.use(session({
 	saveUninitialized: false
 }))
 
+app.use('/api/user/', loginEndpoint)
+app.use('/api/image/', imageEndpoint)
+app.use('/api/category/', categoryEndpoint)
+
 // Use graphql endpoint
 // graphqlEndpoint(app)
-loginEndpoint(app)
-imageEndpoint(app)
-categoryEndpoint(app)
+
+// Entrypoint (everything not starting by '/api')
+app.get(/^((?!^\/api).)*$/, (req, res, next) => {
+	const index = path.join(__dirname, '../public/index.html')
+	fs.stat(index, (err, file) => {
+
+		if (err) // Should not happen
+			return next(reject(500, 'Website not available'))
+
+    res.writeHead(200, {
+			'Content-Type': 'text/html',
+			'Content-Length': file.size
+    })
+
+		fs.createReadStream(index).pipe(res)
+	})
+})
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

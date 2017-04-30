@@ -39,7 +39,7 @@ export function login(token: string): any {
 			type: LOGIN
 		})
 
-		fetch('/user/login', {
+		fetch('/api/user/login', {
 			method: 'POST',
   		credentials: 'same-origin',
 			headers: {
@@ -134,7 +134,7 @@ export function uploadStart(image: Image, file: File): any {
 			}
 		}
 
-		xhr.open('POST', `/image/${image.url}`, true); // TODO URL encode
+		xhr.open('POST', `/api/image/${image.url}`, true); // TODO URL encode
 		xhr.send(file);
   }
 }
