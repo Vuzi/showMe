@@ -98,9 +98,13 @@ export class UploadFileCard extends React.Component<Props, {}> {
 		}
 
 		// Prepare progress bar
-		const progress = uploading || uploaded || error ?
-			<LinearProgress mode="determinate" value={percentUpload} style={loaderStyle} /> :
-			<span />
+		const progress = <span>
+				{
+					uploading || uploaded || error ?
+					<LinearProgress mode="determinate" value={percentUpload} style={loaderStyle} /> :
+					undefined
+				}
+			</span>
 
 		// Prepare badge
 		let badge = <span key='no-badge' />
@@ -166,6 +170,8 @@ export class UploadFileCard extends React.Component<Props, {}> {
 						transitionName='uploadCardUpload'
 						transitionEnterTimeout={300}
 						transitionEnter={true}
+						transitionLeaveTimeout={300}
+						transitionLeave={true}
 					>
 						{ badge }
 					</CSSTransitionGroup>
@@ -179,6 +185,8 @@ export class UploadFileCard extends React.Component<Props, {}> {
 						transitionName='uploadCardUpload'
 						transitionEnterTimeout={300}
 						transitionEnter={true}
+						transitionLeaveTimeout={300}
+						transitionLeave={true}
 					>
 						{ textFieldUrl }
 					</CSSTransitionGroup>
@@ -211,7 +219,7 @@ export class UploadFileCard extends React.Component<Props, {}> {
 						onClick={() => this.props.onUpload()}
 						disabled={uploading || uploaded}
 						backgroundColor='#002e7a'
-						labelColor='white'
+						labelColor='#ffffff'
 					/>
 					<FlatButton
 						label='Remove'

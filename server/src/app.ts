@@ -19,7 +19,7 @@ app.use(cookieParser())
 app.use(Express.static(path.join(__dirname, '../public')))
 app.use(session({
 	secret: 'thisismylittlesecret!',
-	cookie: { maxAge: 60000 },
+	cookie: { maxAge: 6000000 },
 	rolling: true,
 	resave: true,
 	saveUninitialized: false

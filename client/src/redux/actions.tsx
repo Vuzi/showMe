@@ -32,6 +32,31 @@ export const UPLOAD_FAILED: EventType = 'UPLOAD_FAILED'
  * Actions creator
  */
 
+export function loginTest(): any {
+  return (dispatch: any) => {
+		fetch('/api/user/me', {
+			method: 'GET',
+  		credentials: 'same-origin'
+		})
+		.then((res) => {
+			return res.json().then((json) => {
+				return { json, res }
+			})
+		})
+		.then((req) => {
+			if (req.res.status === 200)
+				dispatch(loginSuccess(req.json as User)) // TODO fix ts
+			else if (req.res.status === 403)
+				dispatch(logout())
+			else
+				dispatch(loginFailed(req.json))
+		})
+		.catch((err) => {
+			dispatch(loginFailed(err))
+		})
+	}
+}
+
 export function login(token: string): any {
   return (dispatch: any) => {
 		// Login stated

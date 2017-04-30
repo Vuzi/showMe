@@ -2,7 +2,14 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Link,
+  Route,
+  Switch
+  } from 'react-router-dom'
 import * as injectTapEventPlugin from 'react-tap-event-plugin'
 import { applyMiddleware, createStore } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -11,13 +18,10 @@ import { Title } from './components/title'
 import UploaderApp from './components/upload/uploaderApp'
 import { Image } from './models/image'
 import rootReducer from './redux/reducers'
+import { LoginState, UploadState } from './redux/reducers'
 import {
-  uploadAdd,
-  uploadFailed,
-  uploadRemove,
-  uploadStart,
-  uploadSuccess,
-  uploadUpdate,
+  loginTest,
+	Action,
 } from './redux/actions'
 
 // Needed for onTouchTap
@@ -29,6 +33,33 @@ const store = createStore(
   applyMiddleware(thunkMiddleware)
 )
 
+// Test is we are already connected
+store.dispatch(loginTest())
+
+// Authentication helper TODO move
+class RequireAuthElement extends React.Component<LoginState, {}> {
+  render() {
+    const { connected } = this.props
+
+    if (connected)
+      return this.props.children as JSX.Element
+    else
+      return <Redirect to={{ pathname: '/login' }} />
+  }
+}
+
+const RequireAuthRedux = connect((state: { upload: UploadState, login: LoginState }) => {
+  return state.login
+})(RequireAuthElement)
+
+const RequireAuth = (props: {children?: JSX.Element[]}) => (
+  <Provider store={store}>
+    <RequireAuthRedux>
+      {props.children}
+    </RequireAuthRedux>
+  </Provider>
+)
+
 const Login = () => (
   <Provider store={store}>
     <ConnectApp />
@@ -36,20 +67,26 @@ const Login = () => (
 )
 
 const Upload = () => (
-  <Provider store={store}>
-    <UploaderApp />
-  </Provider>
+  <RequireAuth>
+    <Provider store={store}>
+      <UploaderApp />
+    </Provider>
+  </RequireAuth>
 )
 
 const App = () => (
   <MuiThemeProvider>
-    <Router>
-      <div>
-        <Title />
-        <Route path='/upload' exact component={ Upload }/>
-        <Route path='/' exact component={ Login }/>
-      </div>
-    </Router>
+    <div>
+      <Title />
+      <Router>
+        <Switch>
+          <Route path='/'exact component={ Upload }/>
+          <Route path='/upload'exact component={ Upload }/>
+          <Route path='/login' exact component={ Login }/>
+          { /*<Route component={ NotFound }/> TODO */ }
+        </Switch>
+      </Router>
+    </div>
   </MuiThemeProvider>
 );
 
