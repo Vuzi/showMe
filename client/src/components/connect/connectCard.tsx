@@ -6,12 +6,14 @@ import {
 	CardText,
 	CardTitle
 	} from 'material-ui/Card'
+import CircularProgress from 'material-ui/CircularProgress'
 import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
 import * as React from 'react'
 import * as Dropzone from 'react-dropzone'
 import GoogleLogin from 'react-google-login'
 import { Redirect } from 'react-router-dom'
+import { CSSTransitionGroup } from 'react-transition-group'
 import { LoginState } from '../../redux/reducers'
 
 export interface Props {
@@ -53,7 +55,9 @@ export class ConnectCard extends React.Component<Props, State> {
 	}
 
 	render() {
-		if (this.props.login.connected)
+		const { connected, connecting } = this.props.login
+
+		if (connected)
 			return <Redirect to={{ pathname: '/upload' }} />
 		else
 			return <Card className="login-card">
@@ -61,14 +65,20 @@ export class ConnectCard extends React.Component<Props, State> {
 				<CardText style={{ textAlign: 'center' }}>
 					You need to be logged in to upload images
 				</CardText>
-				<CardText style={{ paddingBottom: '40px'}}>
-					<GoogleLogin
-						disabled={this.props.login.connecting}
-						clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
-						buttonText="Login with Google"
-						onSuccess={(event: any) => this.responseGoogle(event)}
-						onFailure={() => this.showError()}
-					/>
+				<CardText style={{ paddingBottom: '40px', textAlign: 'center' }}>
+
+						{
+							connecting ?
+							<CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} /> :
+							<GoogleLogin
+								key='googleAuth'
+								disabled={this.props.login.connecting}
+								clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
+								buttonText="Login with Google"
+								onSuccess={(event: any) => this.responseGoogle(event)}
+								onFailure={() => this.showError()}
+							/>
+						}
 				</CardText>
 				<Snackbar
 					open={this.state.showError}

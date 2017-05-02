@@ -34,26 +34,33 @@ export const UPLOAD_FAILED: EventType = 'UPLOAD_FAILED'
 
 export function loginTest(): any {
   return (dispatch: any) => {
-		fetch('/api/user/me', {
-			method: 'GET',
-  		credentials: 'same-origin'
+		// Login stated
+    dispatch({
+			type: LOGIN
 		})
-		.then((res) => {
-			return res.json().then((json) => {
-				return { json, res }
+
+		setTimeout(() => {
+			fetch('/api/user/me', {
+				method: 'GET',
+				credentials: 'same-origin'
 			})
-		})
-		.then((req) => {
-			if (req.res.status === 200)
-				dispatch(loginSuccess(req.json as User)) // TODO fix ts
-			else if (req.res.status === 403)
-				dispatch(logout())
-			else
-				dispatch(loginFailed(req.json))
-		})
-		.catch((err) => {
-			dispatch(loginFailed(err))
-		})
+			.then((res) => {
+				return res.json().then((json) => {
+					return { json, res }
+				})
+			})
+			.then((req) => {
+				if (req.res.status === 200)
+					dispatch(loginSuccess(req.json as User)) // TODO fix ts
+				else if (req.res.status === 403)
+					dispatch(logout())
+				else
+					dispatch(loginFailed(req.json))
+			})
+			.catch((err) => {
+				dispatch(loginFailed(err))
+			})
+		}, 1000)
 	}
 }
 
