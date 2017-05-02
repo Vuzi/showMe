@@ -9,6 +9,7 @@ import categoryEndpoint from './routes/category'
 import imageEndpoint from './routes/image'
 import loginEndpoint from './routes/login'
 import { reject } from './utils/error'
+import { NOT_FOUND, UNKNOWN } from './utils/errorCode'
 
 const app = Express()
 
@@ -51,7 +52,7 @@ app.get(/^((?!^\/api).)*$/, (req, res, next) => {
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
-	next(reject(404, 'Not Found'))
+	next(reject(404, 'Not Found', NOT_FOUND))
 });
 
 // Error handlers
@@ -61,6 +62,7 @@ app.use((error: any, req: any, res: any, next: any) => {
 	res.json({
 		message: error.error ? error.error.message : error.message,
 		error: error.error ? error.error : error,
+		code: error.code || UNKNOWN,
 		detail: error.detail
 	})
 })

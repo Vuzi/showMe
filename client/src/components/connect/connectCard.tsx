@@ -66,7 +66,6 @@ export class ConnectCard extends React.Component<Props, State> {
 					You need to be logged in to upload images
 				</CardText>
 				<CardText style={{ paddingBottom: '40px', textAlign: 'center' }}>
-
 						{
 							connecting ?
 							<CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} /> :

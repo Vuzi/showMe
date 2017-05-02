@@ -3,6 +3,8 @@ import db from './postgre'
 import { Category } from '../models/category'
 import { Image } from '../models/image'
 import { User } from '../models/user'
+import { fail } from '../utils/error'
+import { URL_ALREADY_EXISTS } from '../utils/errorCode'
 
 export function create(user: User, image: Image): Promise<Image> {
 
@@ -17,7 +19,7 @@ export function create(user: User, image: Image): Promise<Image> {
 		]).then((value) => {
 			// Already present
 			if (value.rowCount > 0)
-				return Promise.reject(new Error(`Image ${image.title} already exists`))
+				return Promise.reject(fail(`Image ${image.title} already exists`, URL_ALREADY_EXISTS))
 		}).then(() => {
 			return client.query(`
 				INSERT INTO image(
@@ -49,7 +51,7 @@ export function create(user: User, image: Image): Promise<Image> {
 			return image
 		}).catch((e) => {
 			client.release()
-			return Promise.reject(e)
+			return Promise.reject(e instanceof Error ? fail(e) : e)
 		})
 	})
 }

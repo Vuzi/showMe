@@ -26,7 +26,7 @@ router.get('/test', needAuth, (req, res, next) => {
 		res.json(category)
 	})
 	.catch((err) => {
-		next(reject(400, err, newCategory))
+		next(reject(400, err, undefined, newCategory)) // TODO handle errors in service
 	})
 })
 

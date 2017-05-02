@@ -2,13 +2,14 @@ import * as Express from 'express'
 import { User } from '../models/user'
 import * as UserService from '../services/userService'
 import { reject } from '../utils/error'
+import { AUTH_REQUIRED } from '../utils/errorCode'
 
 // Auth middleware
 export function needAuth(req: any, res: any, next: any) {
 	if (req.session.connected === true)
 		next()
 	else
-		next(reject(403, 'Not connected'))
+		next(reject(403, 'Not connected', AUTH_REQUIRED))
 }
 
 const router = Express.Router()

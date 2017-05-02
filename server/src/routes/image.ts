@@ -7,7 +7,8 @@ import * as uuid from 'uuid'
 import { needAuth } from './login'
 import { Image } from '../models/image'
 import * as ImageService from '../services/imageService'
-import { reject } from '../utils/error'
+import { FailureError, reject } from '../utils/error'
+import { FILENAME_INVALID } from '../utils/errorCode'
 
 const router = Express.Router()
 
@@ -39,21 +40,23 @@ router.get('/:filename', (req, res, next) => {
 })
 
 // Upload an image
-router.post('/:filename', needAuth, (req, res, next) => {
-	// Check provided name
-	const filename = sanitizeFilename(req.params.filename)
+router.post('/:url', needAuth, (req, res, next) => {
+	const url = sanitizeFilename(req.params.url)
+	const title = req.query.title
+	const description = req.query.description
 
-	if (filename.length <= 0)
-		return next(reject(400, 'Invalid filename'))
+	// Check provided names
+	if (url.length <= 0)
+		return next(reject(400, 'Invalid filename', FILENAME_INVALID))
 
-	const internalFileName = uuid() + path.extname(filename)
+	const internalFileName = uuid() + path.extname(url)
 	const filePath = storagePath + internalFileName
 
 	const onEnd = () => {
 		const newImage: Image = {
 			id: uuid(),
-			url: filename,
-			title: filename,
+			url,
+			title: url,
 			filename: internalFileName,
 			description: '',
 			creation: new Date(),
@@ -65,9 +68,10 @@ router.post('/:filename', needAuth, (req, res, next) => {
 		.then((image) => {
 			res.json(image)
 		})
-		.catch((err) => {
-			fs.unlink(filePath)
-			next(reject(405, err, newImage))
+		.catch((err: FailureError) => {
+			fs.unlink(filePath, () => {
+				next(reject(405, err.error, err.code, newImage))
+			})
 		})
 	}
 

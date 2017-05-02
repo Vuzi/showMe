@@ -201,6 +201,7 @@ export class UploadFileCard extends React.Component<Props, {}> {
 						defaultValue={image.url}
 						floatingLabelText='Image URL'
 						fullWidth={true}
+						errorText={ error ? (error.code === 'URL_ALREADY_EXISTS' ? error.message : undefined) : undefined /* TODO helper */ }
 						disabled={uploading || uploaded}
 						onChange={(_, newValue: string) => this.onChangeURL(newValue)}
 					/><br/>
@@ -209,7 +210,7 @@ export class UploadFileCard extends React.Component<Props, {}> {
 						multiLine={true}
 						fullWidth={true}
 						disabled={uploading || uploaded}
-						rows={2}
+						rows={1}
 						onChange={(_, newValue: string) => this.onChangeDescription(newValue)}
 					/><br />
 				</CardText>
