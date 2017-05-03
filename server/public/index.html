@@ -82,6 +82,33 @@
 				transition-duration: 300ms;
 				transition-timing-function: ease-in;
 			}
+			
+			.uploadCardTag-enter {
+				opacity: 0.01;
+				transform: scale(0.6);
+			}
+
+			.uploadCardTag-enter.uploadCardTag-enter-active {
+				opacity: 1;
+				transform: scale(1);
+				transition-property: transform opacity;
+				transition-duration: 300ms;
+				transition-timing-function: ease-in;
+			}
+
+			.uploadCardTag-leave {
+				opacity: 1;
+				transform: scale(1);
+			}
+
+			.uploadCardTag-leave.uploadCardTag-leave-active {
+				opacity: 0.01;
+				transform: scale(0.6);
+				transition-property: transform opacity;
+				transition-duration: 300ms;
+				transition-timing-function: ease-in;
+			}
+			
 		</style>
 	</head>
 	<body>

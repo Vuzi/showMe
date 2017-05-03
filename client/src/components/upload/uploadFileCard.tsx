@@ -39,7 +39,6 @@ export interface Props {
 }
 
 interface State {
-	values: string[],
 	tag: string
 }
 
@@ -48,7 +47,6 @@ export class UploadFileCard extends React.Component<Props, State> {
 	constructor(props: Props){
 		super(props)
 		this.state = {
-			values: [] as string[],
 			tag: ''
 		}
 	}
@@ -81,34 +79,8 @@ export class UploadFileCard extends React.Component<Props, State> {
 		})
 	}
 
-  handleChange = (event: any, index: number, values: any) => this.setState({values});
-
-  menuItems(values: string[]) {
-		const names = [
-			'Oliver Hansen',
-			'Van Henry',
-			'April Tucker',
-			'Ralph Hubbard',
-			'Omar Alexander',
-			'Carlos Abbott',
-			'Miriam Wagner',
-			'Bradley Wilkerson',
-			'Virginia Andrews',
-			'Kelly Snyder',
-		];
-
-    return names.map((name) => (
-      <MenuItem
-        key={name}
-        insetChildren={true}
-        checked={values && values.indexOf(name) !== -1}
-        value={name}
-        primaryText={name}
-      />
-    ));
-  }
-
 	render() {
+		const {tag} = this.state
 		const {file, image, uploading, uploaded, percentUpload, error} = this.props.image
     const fileURL = window.URL.createObjectURL(file)
 
@@ -238,20 +210,13 @@ export class UploadFileCard extends React.Component<Props, State> {
 						disabled={uploading || uploaded}
 						onChange={(_, newValue: string) => this.onChangeURL(newValue)}
 					/><br/>
-					<TextField
-						floatingLabelText='Image description'
-						multiLine={true}
-						fullWidth={true}
-						disabled={uploading || uploaded}
-						rows={1}
-						onChange={(_, newValue: string) => this.onChangeDescription(newValue)}
-					/><br />
+
 					<TextField
 						floatingLabelText='Tags'
 						fullWidth={true}
 						onKeyPress={(event) => {
-							if (event.nativeEvent.key === 'Enter') {
-								this.onChangeTags(image.tags.concat([ this.state.tag ])) // Add the validated tag
+							if (event.nativeEvent.key === 'Enter' && tag.length > 0) {
+								this.onChangeTags(image.tags.concat([ tag ])) // Add the validated tag
 								this.setState({ tag : '' })
 							}
 						}}
@@ -261,30 +226,30 @@ export class UploadFileCard extends React.Component<Props, State> {
 						onChange={(_, newValue: string) => this.setState({ tag : newValue })}
 					/><br />
 
-					<div style={{ display: 'flex', flexWrap: 'wrap' }} >
-						{
-							image.tags.map((tag, index) => {
-								return <Chip
-										key={`tag-${tag}`}
-										style={{ marginRight: '5px', marginTop: '3px' }}
-										onRequestDelete={() => console.log(tag)} // TODO
-									>
-										{tag}
-									</Chip>
-							})
-						}
+					<div>
+						<CSSTransitionGroup
+							transitionName='uploadCardTag'
+							transitionEnterTimeout={300}
+							transitionEnter={true}
+							transitionLeaveTimeout={300}
+							transitionLeave={true}
+							style={{ display: 'flex', flexWrap: 'wrap' }}
+						>
+							{
+								image.tags.map((tag, index) => {
+									return <Chip
+											key={`tag-${tag}`}
+											style={{ marginRight: '5px', marginTop: '3px' }}
+											onRequestDelete={() => {
+												this.onChangeTags(image.tags.filter((tagToTest) => tagToTest !== tag))
+											}}
+										>
+											{tag}
+										</Chip>
+								})
+							}
+						</CSSTransitionGroup>
 					</div>
-
-					<SelectField
-          	floatingLabelText={ this.state.values.length <= 1 ? 'Category' : 'Catgories' }
-						multiple={true}
-						hintText='Select as many categories as needed'
-						value={this.state.values}
-						onChange={this.handleChange}
-						fullWidth={true}
-					>
-						{this.menuItems(this.state.values)}
-					</SelectField>
 
 				</CardText>
 				<CardActions>
