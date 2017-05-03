@@ -9,10 +9,10 @@ import {
 import FlatButton from 'material-ui/FlatButton'
 import Snackbar from 'material-ui/Snackbar'
 import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import * as Dropzone from 'react-dropzone'
 import GoogleLogin from 'react-google-login'
-
-
+import Paster from '../utils/paster'
 
 export interface Props {
 	onDroppedFile: (file: File) => void
@@ -61,7 +61,7 @@ export class UploadCard extends React.Component<Props, State> {
 	render() {
 		const style: React.CSSProperties = {
 			border: 'dashed 4px',
-			borderColor: this.state.isHovered ? '#C1C1C1' : '#f7f7f7',
+			borderColor: '#C1C1C1',
 			margin: 'auto',
 			marginBottom: '10px',
 			maxWidth: '500px',
@@ -71,7 +71,16 @@ export class UploadCard extends React.Component<Props, State> {
 			backgroundRepeat: 'no-repeat',
 			backgroundSize: 'initial',
 			backgroundPosition: 'center',
-			cursor: 'pointer'
+			cursor: 'pointer',
+			opacity: 0.4,
+			transitionProperty: 'transform opacity',
+			transitionDuration: '300ms',
+			transitionTimingFunction: 'ease-in',
+		}
+
+		const styleHovered = {
+			...style,
+			opacity: 1
 		}
 
 		return <Card className="login-card">
@@ -84,9 +93,13 @@ export class UploadCard extends React.Component<Props, State> {
 					<Dropzone
 						accept='video/*,image/*'
 						onDrop={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
-						style={style}
+						style={ this.state.isHovered ? styleHovered : style}
 						onDragEnter={() => this.onDragEnter()}
 						onDragLeave={() => this.onDragLeave()}
+					/>
+					<Paster
+						accept='video/*,image/*'
+						onPastedFiles={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
 					/>
 				</div>
         <Snackbar

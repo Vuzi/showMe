@@ -23,6 +23,8 @@ import * as Dropzone from 'react-dropzone'
 import * as FileImage from 'react-file-image'
 import GoogleLogin from 'react-google-login'
 import { CSSTransitionGroup } from 'react-transition-group'
+import BadgeKO from './badgeKo'
+import BadgeOK from './badgeOk'
 import { Image } from '../../models/image'
 import { UploadStateImage } from '../../redux/reducers'
 
@@ -33,7 +35,11 @@ export interface Props {
 	onChangeImage: (image: Image) => void
 }
 
-export class UploadFileCard extends React.Component<Props, {}> {
+interface State {
+	values: string[]
+}
+
+export class UploadFileCard extends React.Component<Props, State> {
 
 	onChangeTitle(title: string) {
 		this.props.onChangeImage({
@@ -108,29 +114,10 @@ export class UploadFileCard extends React.Component<Props, {}> {
 
 		// Prepare badge
 		let badge = <span key='no-badge' />
-		if (uploaded) {
-			badge = <div key={`badge-ok-${image.id}`}>
-				<Paper style={iconStyle} zDepth={3} circle={true} >
-					<Avatar
-						icon={<CheckIcon />}
-						color={'white'}
-						backgroundColor={'green'}
-						size={50}
-					/>
-				</Paper>
-			</div>
-		} else if (error) {
-			badge = <div key={`badge-ko-${image.id}`}>
-				<Paper style={iconStyle} zDepth={3} circle={true} >
-					<Avatar
-						icon={<ErrorIcon />}
-						color={'white'}
-						backgroundColor={'#BC0000'}
-						size={50}
-					/>
-				</Paper>
-			</div>
-		}
+		if (uploaded)
+			badge = <BadgeOK id={image.id} />
+		else if (error)
+			badge = <BadgeKO id={image.id} />
 
 		// Prepare URL
 		let textFieldUrl = <span key='no-url' />
