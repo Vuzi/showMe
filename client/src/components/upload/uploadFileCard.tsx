@@ -7,11 +7,14 @@ import {
 	CardText,
 	CardTitle
 	} from 'material-ui/Card'
+import Chip from 'material-ui/Chip'
 import FlatButton from 'material-ui/FlatButton'
 import FontIcon from 'material-ui/FontIcon'
 import LinearProgress from 'material-ui/LinearProgress'
+import MenuItem from 'material-ui/MenuItem'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
+import SelectField from 'material-ui/SelectField'
 import OpenIcon from 'material-ui/svg-icons/action/open-in-new'
 import ErrorIcon from 'material-ui/svg-icons/content/clear'
 import CopyIcon from 'material-ui/svg-icons/content/content-copy'
@@ -36,10 +39,19 @@ export interface Props {
 }
 
 interface State {
-	values: string[]
+	values: string[],
+	tag: string
 }
 
 export class UploadFileCard extends React.Component<Props, State> {
+
+	constructor(props: Props){
+		super(props)
+		this.state = {
+			values: [] as string[],
+			tag: ''
+		}
+	}
 
 	onChangeTitle(title: string) {
 		this.props.onChangeImage({
@@ -61,6 +73,40 @@ export class UploadFileCard extends React.Component<Props, State> {
 			description
 		})
 	}
+
+	onChangeTags(tags: string[]) {
+		this.props.onChangeImage({
+			...this.props.image.image,
+			tags : tags.filter((v, i, a) => a.indexOf(v) === i) // Filter uniques
+		})
+	}
+
+  handleChange = (event: any, index: number, values: any) => this.setState({values});
+
+  menuItems(values: string[]) {
+		const names = [
+			'Oliver Hansen',
+			'Van Henry',
+			'April Tucker',
+			'Ralph Hubbard',
+			'Omar Alexander',
+			'Carlos Abbott',
+			'Miriam Wagner',
+			'Bradley Wilkerson',
+			'Virginia Andrews',
+			'Kelly Snyder',
+		];
+
+    return names.map((name) => (
+      <MenuItem
+        key={name}
+        insetChildren={true}
+        checked={values && values.indexOf(name) !== -1}
+        value={name}
+        primaryText={name}
+      />
+    ));
+  }
 
 	render() {
 		const {file, image, uploading, uploaded, percentUpload, error} = this.props.image
@@ -200,6 +246,46 @@ export class UploadFileCard extends React.Component<Props, State> {
 						rows={1}
 						onChange={(_, newValue: string) => this.onChangeDescription(newValue)}
 					/><br />
+					<TextField
+						floatingLabelText='Tags'
+						fullWidth={true}
+						onKeyPress={(event) => {
+							if (event.nativeEvent.key === 'Enter') {
+								this.onChangeTags(image.tags.concat([ this.state.tag ])) // Add the validated tag
+								this.setState({ tag : '' })
+							}
+						}}
+						disabled={uploading || uploaded}
+						rows={1}
+						value={this.state.tag}
+						onChange={(_, newValue: string) => this.setState({ tag : newValue })}
+					/><br />
+
+					<div style={{ display: 'flex', flexWrap: 'wrap' }} >
+						{
+							image.tags.map((tag, index) => {
+								return <Chip
+										key={`tag-${tag}`}
+										style={{ marginRight: '5px', marginTop: '3px' }}
+										onRequestDelete={() => console.log(tag)} // TODO
+									>
+										{tag}
+									</Chip>
+							})
+						}
+					</div>
+
+					<SelectField
+          	floatingLabelText={ this.state.values.length <= 1 ? 'Category' : 'Catgories' }
+						multiple={true}
+						hintText='Select as many categories as needed'
+						value={this.state.values}
+						onChange={this.handleChange}
+						fullWidth={true}
+					>
+						{this.menuItems(this.state.values)}
+					</SelectField>
+
 				</CardText>
 				<CardActions>
 					<RaisedButton
