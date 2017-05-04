@@ -2,7 +2,6 @@ import * as Express from 'express'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
-import * as sanitizeFilename from 'sanitize-filename'
 import * as uuid from 'uuid'
 import { needAuth } from './login'
 import { Image } from '../models/image'
@@ -16,7 +15,7 @@ const router = Express.Router()
 const storagePath = __dirname + '/../../images/'
 
 // Download an image
-router.get('/raw/:filename', (req, res, next) => {
+router.get('/raw/:filename(*)', (req, res, next) => {
 	ImageService.get(req.params.filename)
 	.then((image) => {
 		// Make static ?
@@ -29,7 +28,7 @@ router.get('/raw/:filename', (req, res, next) => {
 })
 
 // Download an image's metadata
-router.get('/:filename', (req, res, next) => {
+router.get('/:filename(*)', (req, res, next) => {
 	ImageService.get(req.params.filename)
 	.then((image) => {
 		res.json(image)
@@ -41,9 +40,10 @@ router.get('/:filename', (req, res, next) => {
 
 // Upload an image
 router.post('/:url', needAuth, (req, res, next) => {
-	const url = sanitizeFilename(req.params.url)
+	const url = req.params.url
 	const title = req.query.title
 	const description = req.query.description
+	const tags = req.query.tags.split(';').map((t) => t.trim()).filter((t) => t.length > 0)
 
 	// Check provided names
 	if (url.length <= 0)
@@ -56,12 +56,12 @@ router.post('/:url', needAuth, (req, res, next) => {
 		const newImage: Image = {
 			id: uuid(),
 			url,
-			title: url,
+			title: title || url,
 			filename: internalFileName,
-			description: '',
+			description: description || '',
 			creation: new Date(),
 			modification: new Date(),
-			tags: []
+			tags: tags || []
 		}
 
 		ImageService.create(req.session.user, newImage)

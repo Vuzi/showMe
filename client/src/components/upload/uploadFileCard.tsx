@@ -75,7 +75,7 @@ export class UploadFileCard extends React.Component<Props, State> {
 	onChangeTags(tags: string[]) {
 		this.props.onChangeImage({
 			...this.props.image.image,
-			tags : tags.filter((v, i, a) => a.indexOf(v) === i) // Filter uniques
+			tags : tags.filter((v, i, a) => a.indexOf(v) === i).map((t) => t.trim()) // Filter uniques
 		})
 	}
 

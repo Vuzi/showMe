@@ -8,6 +8,19 @@ export interface Action<T> {
 	value: T
 }
 
+function fixedEncodeURIComponent(s: string) {
+	return encodeURIComponent(s).replace(/%5B/g, '[').replace(/%5D/g, ']');
+}
+
+function formatParams(params: { [id: string]: string }){
+  return '?' + Object
+		.keys(params)
+		.map((key: string) => {
+			return `${fixedEncodeURIComponent(key)}=${fixedEncodeURIComponent(params[key])}`
+		})
+		.join('&')
+}
+
 /**
  * Actions types
  */
@@ -166,7 +179,11 @@ export function uploadStart(image: Image, file: File): any {
 			}
 		}
 
-		xhr.open('POST', `/api/image/${image.url}`, true); // TODO URL encode
+		xhr.open('POST', `/api/image/${fixedEncodeURIComponent(image.url)}` + formatParams({
+			title: image.title,
+			description: image.description,
+			tags : image.tags.join(';')
+		}), true); // TODO URL encode
 		xhr.send(file);
   }
 }
