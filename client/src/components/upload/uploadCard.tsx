@@ -12,6 +12,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import * as Dropzone from 'react-dropzone'
 import GoogleLogin from 'react-google-login'
+import { PaperHoverable } from '../paperHoverable'
 import Paster from '../utils/paster'
 
 export interface Props {
@@ -60,6 +61,10 @@ export class UploadCard extends React.Component<Props, State> {
 
 	render() {
 		const style: React.CSSProperties = {
+			marginBottom: '20px'
+		}
+
+		const dropdownZoneStyle: React.CSSProperties = {
 			border: 'dashed 4px',
 			borderColor: '#C1C1C1',
 			margin: 'auto',
@@ -78,38 +83,40 @@ export class UploadCard extends React.Component<Props, State> {
 			transitionTimingFunction: 'ease-in',
 		}
 
-		const styleHovered = {
-			...style,
+		const dropdownZoneStyleHovered = {
+			...dropdownZoneStyle,
 			opacity: 1
 		}
 
-		return <Card className="login-card">
-			<CardTitle title='Upload a file' subtitle='Drag &amp; drop' />
-			<CardText>
-				<div
-					onMouseOver={() => this.onDragEnter()}
-					onMouseOut={() => this.onDragLeave()}
-				>
-					<Dropzone
-						accept='video/*,image/*'
-						onDrop={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
-						style={ this.state.isHovered ? styleHovered : style}
-						onDragEnter={() => this.onDragEnter()}
-						onDragLeave={() => this.onDragLeave()}
-					/>
-					<Paster
-						accept='video/*,image/*'
-						onPastedFiles={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
-					/>
-				</div>
-        <Snackbar
-          open={this.state.showError}
-          message='Only images and webm can be uploaded'
-          autoHideDuration={4000}
-          onRequestClose={this.hideError}
-        />
-			</CardText>
-		</Card>
+		return <PaperHoverable>
+				<Card style={style} >
+					<CardTitle title='Upload a file' subtitle='Drag &amp; drop' />
+					<CardText>
+						<div
+							onMouseOver={() => this.onDragEnter()}
+							onMouseOut={() => this.onDragLeave()}
+						>
+							<Dropzone
+								accept='video/*,image/*'
+								onDrop={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
+								style={ this.state.isHovered ? dropdownZoneStyleHovered : dropdownZoneStyle}
+								onDragEnter={() => this.onDragEnter()}
+								onDragLeave={() => this.onDragLeave()}
+							/>
+							<Paster
+								accept='video/*,image/*'
+								onPastedFiles={(accepted: File[], rejected: File[]) => this.onDrop(accepted, rejected)}
+							/>
+						</div>
+						<Snackbar
+							open={this.state.showError}
+							message='Only images and webm can be uploaded'
+							autoHideDuration={4000}
+							onRequestClose={this.hideError}
+						/>
+					</CardText>
+				</Card>
+			</PaperHoverable>
 	}
 
 }

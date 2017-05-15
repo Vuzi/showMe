@@ -1,18 +1,30 @@
 import * as React from 'react'
 
-import {Card, CardActions, CardHeader, CardMedia, CardText, CardTitle} from 'material-ui/Card'
-
-import FlatButton from 'material-ui/FlatButton'
-
 export interface HelloProps {
 	compiler: string
 	framework: string
 }
 
 export class Title extends React.Component<{}, undefined> {
+
 	render() {
-		return <h1 className='title'>
-				<span className='show'>Show</span> <span className='me'>Me</span>
+		const titleStyle: React.CSSProperties = {
+			fontFamily: 'Amatic SC',
+			fontSize: '160px',
+			fontWeight: 'normal',
+			marginBottom: '21px',
+			marginTop: '10px'
+		}
+
+		const titleDetailStyle: React.CSSProperties = {
+			fontWeight: 'bold',
+			color: '#002e7a'
+		}
+
+		return <h1 style={titleStyle}>
+				<span>Show </span>
+				<span style={titleDetailStyle}>Me</span>
 			</h1>
 	}
+
 }

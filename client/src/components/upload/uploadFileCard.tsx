@@ -30,6 +30,7 @@ import BadgeKO from './badgeKo'
 import BadgeOK from './badgeOk'
 import { Image } from '../../models/image'
 import { UploadStateImage } from '../../redux/reducers'
+import { PaperHoverable } from '../paperHoverable'
 
 export interface Props {
 	image: UploadStateImage
@@ -169,104 +170,106 @@ export class UploadFileCard extends React.Component<Props, State> {
 		}
 
 		return <div>
-				<Card style={cardStyle}>
-				<CardTitle title={image.title} subtitle={file.type}>
-					<CSSTransitionGroup
-						transitionName='uploadCardUpload'
-						transitionEnterTimeout={300}
-						transitionEnter={true}
-						transitionLeaveTimeout={300}
-						transitionLeave={true}
-					>
-						{ badge }
-					</CSSTransitionGroup>
-				</CardTitle>
-				<CardMedia>
-					{ media }
-      		{ progress }
-				</CardMedia>
-				<CardText>
-					<CSSTransitionGroup
-						transitionName='uploadCardUpload'
-						transitionEnterTimeout={300}
-						transitionEnter={true}
-						transitionLeaveTimeout={300}
-						transitionLeave={true}
-					>
-						{ textFieldUrl }
-					</CSSTransitionGroup>
-					<TextField
-						defaultValue={image.title}
-						floatingLabelText='Image title'
-						fullWidth={true}
-						disabled={uploading || uploaded}
-						onChange={(_, newValue: string) => this.onChangeTitle(newValue)}
-					/><br/>
-					<TextField
-						defaultValue={image.url}
-						floatingLabelText='Image URL'
-						fullWidth={true}
-						errorText={ error ? (error.code === 'URL_ALREADY_EXISTS' ? error.message : undefined) : undefined /* TODO helper */ }
-						disabled={uploading || uploaded}
-						onChange={(_, newValue: string) => this.onChangeURL(newValue)}
-					/><br/>
-
-					<TextField
-						floatingLabelText='Tags'
-						fullWidth={true}
-						onKeyPress={(event) => {
-							if (event.nativeEvent.key === 'Enter' && tag.length > 0) {
-								this.onChangeTags(image.tags.concat([ tag ])) // Add the validated tag
-								this.setState({ tag : '' })
-							}
-						}}
-						disabled={uploading || uploaded}
-						rows={1}
-						value={this.state.tag}
-						onChange={(_, newValue: string) => this.setState({ tag : newValue })}
-					/><br />
-
-					<div>
+				<PaperHoverable>
+					<Card style={cardStyle}>
+					<CardTitle title={image.title} subtitle={file.type}>
 						<CSSTransitionGroup
-							transitionName='uploadCardTag'
+							transitionName='uploadCardUpload'
 							transitionEnterTimeout={300}
 							transitionEnter={true}
 							transitionLeaveTimeout={300}
 							transitionLeave={true}
-							style={{ display: 'flex', flexWrap: 'wrap' }}
 						>
-							{
-								image.tags.map((tag, index) => {
-									return <Chip
-											key={`tag-${tag}`}
-											style={{ marginRight: '5px', marginTop: '3px' }}
-											onRequestDelete={() => {
-												this.onChangeTags(image.tags.filter((tagToTest) => tagToTest !== tag))
-											}}
-										>
-											{tag}
-										</Chip>
-								})
-							}
+							{ badge }
 						</CSSTransitionGroup>
-					</div>
+					</CardTitle>
+					<CardMedia>
+						{ media }
+						{ progress }
+					</CardMedia>
+					<CardText>
+						<CSSTransitionGroup
+							transitionName='uploadCardUpload'
+							transitionEnterTimeout={300}
+							transitionEnter={true}
+							transitionLeaveTimeout={300}
+							transitionLeave={true}
+						>
+							{ textFieldUrl }
+						</CSSTransitionGroup>
+						<TextField
+							defaultValue={image.title}
+							floatingLabelText='Image title'
+							fullWidth={true}
+							disabled={uploading || uploaded}
+							onChange={(_, newValue: string) => this.onChangeTitle(newValue)}
+						/><br/>
+						<TextField
+							defaultValue={image.url}
+							floatingLabelText='Image URL'
+							fullWidth={true}
+							errorText={ error ? (error.code === 'URL_ALREADY_EXISTS' ? error.message : undefined) : undefined /* TODO helper */ }
+							disabled={uploading || uploaded}
+							onChange={(_, newValue: string) => this.onChangeURL(newValue)}
+						/><br/>
 
-				</CardText>
-				<CardActions>
-					<RaisedButton
-						label='Upload'
-						onClick={() => this.props.onUpload()}
-						disabled={uploading || uploaded}
-						backgroundColor='#002e7a'
-						labelColor='#ffffff'
-					/>
-					<FlatButton
-						label='Remove'
-						onClick={() => this.props.onRemove()}
-						disabled={uploading}
-					/>
-				</CardActions>
-			</Card>
+						<TextField
+							floatingLabelText='Tags'
+							fullWidth={true}
+							onKeyPress={(event) => {
+								if (event.nativeEvent.key === 'Enter' && tag.length > 0) {
+									this.onChangeTags(image.tags.concat([ tag ])) // Add the validated tag
+									this.setState({ tag : '' })
+								}
+							}}
+							disabled={uploading || uploaded}
+							rows={1}
+							value={this.state.tag}
+							onChange={(_, newValue: string) => this.setState({ tag : newValue })}
+						/><br />
+
+						<div>
+							<CSSTransitionGroup
+								transitionName='uploadCardTag'
+								transitionEnterTimeout={300}
+								transitionEnter={true}
+								transitionLeaveTimeout={300}
+								transitionLeave={true}
+								style={{ display: 'flex', flexWrap: 'wrap' }}
+							>
+								{
+									image.tags.map((tag, index) => {
+										return <Chip
+												key={`tag-${tag}`}
+												style={{ marginRight: '5px', marginTop: '3px' }}
+												onRequestDelete={() => {
+													this.onChangeTags(image.tags.filter((tagToTest) => tagToTest !== tag))
+												}}
+											>
+												{tag}
+											</Chip>
+									})
+								}
+							</CSSTransitionGroup>
+						</div>
+
+					</CardText>
+					<CardActions>
+						<RaisedButton
+							label='Upload'
+							onClick={() => this.props.onUpload()}
+							disabled={uploading || uploaded}
+							backgroundColor='#002e7a'
+							labelColor='#ffffff'
+						/>
+						<FlatButton
+							label='Remove'
+							onClick={() => this.props.onRemove()}
+							disabled={uploading}
+						/>
+					</CardActions>
+				</Card>
+			</PaperHoverable>
 		</div>
 	}
 

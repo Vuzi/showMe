@@ -15,6 +15,7 @@ import GoogleLogin from 'react-google-login'
 import { Redirect } from 'react-router-dom'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { LoginState } from '../../redux/reducers'
+import { PaperHoverable } from '../paperHoverable'
 
 export interface Props {
 	onLogin: (token: string) => void
@@ -60,36 +61,38 @@ export class ConnectCard extends React.Component<Props, State> {
 		if (connected)
 			return <Redirect to={{ pathname: '/upload' }} />
 		else
-			return <Card className="login-card">
-				<CardTitle titleColor='grey' />
-				<CardText style={{ textAlign: 'center' }}>
-					You need to be logged in to upload images
-				</CardText>
-				<CardText style={{ paddingBottom: '40px', textAlign: 'center' }}>
-						{
-							connecting ?
-							<CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} /> :
-							<GoogleLogin
-								key='googleAuth'
-								disabled={this.props.login.connecting}
-								clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
-								buttonText="Login with Google"
-								onSuccess={(event: any) => this.responseGoogle(event)}
-								onFailure={() => this.showError()}
-							/>
+			return <PaperHoverable>
+					<Card className="login-card">
+					<CardTitle titleColor='grey' />
+					<CardText style={{ textAlign: 'center' }}>
+						You need to be logged in to upload images
+					</CardText>
+					<CardText style={{ paddingBottom: '40px', textAlign: 'center' }}>
+							{
+								connecting ?
+								<CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} /> :
+								<GoogleLogin
+									key='googleAuth'
+									disabled={this.props.login.connecting}
+									clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
+									buttonText="Login with Google"
+									onSuccess={(event: any) => this.responseGoogle(event)}
+									onFailure={() => this.showError()}
+								/>
+							}
+					</CardText>
+					<Snackbar
+						open={this.state.showError}
+						message={
+							this.props.login.error ?
+								'Login failed... Something went wrong server-side!' :
+								'Login failed... Did you accepted the app?'
 						}
-				</CardText>
-				<Snackbar
-					open={this.state.showError}
-					message={
-						this.props.login.error ?
-							'Login failed... Something went wrong server-side!' :
-							'Login failed... Did you accepted the app?'
-					}
-					autoHideDuration={7000}
-					onRequestClose={() => this.hideError()}
-				/>
-			</Card>
+						autoHideDuration={7000}
+						onRequestClose={() => this.hideError()}
+					/>
+				</Card>
+			</PaperHoverable>
 	}
 
 }

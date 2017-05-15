@@ -74,9 +74,14 @@ const Upload = () => (
   </RequireAuth>
 )
 
+const wrapperStyle: React.CSSProperties = {
+  maxWidth: '700px',
+  margin: 'auto'
+}
+
 const App = () => (
   <MuiThemeProvider>
-    <div>
+    <div style={wrapperStyle}>
       <Title />
       <Router>
         <Switch>

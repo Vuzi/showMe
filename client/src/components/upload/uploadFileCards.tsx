@@ -15,6 +15,7 @@ import { CSSTransitionGroup } from 'react-transition-group'
 import { UploadFileCard } from './uploadFileCard'
 import { Image } from '../../models/image'
 import { UploadStateImage } from '../../redux/reducers'
+import { PaperHoverable } from '../paperHoverable'
 
 export interface Props {
 	images: UploadStateImage[]
@@ -62,14 +63,14 @@ export class UploadFileCards extends React.Component<Props, {}> {
 		})
 
 		if (fileCards.length > 1) {
-			fileCards.push(<div style={lastCardStyle} key='0'>
+			fileCards.push(<PaperHoverable style={lastCardStyle} key='0'>
 					<Card>
 						<CardActions >
 							<RaisedButton label="Upload All" primary={true} />
 							<FlatButton label="Clear" onClick={() => this.onClear()} />
 						</CardActions>
 					</Card>
-				</div>)
+				</PaperHoverable>)
 		}
 
 		return <div style={style}>

@@ -14,6 +14,7 @@ import { UploadCard } from './uploadCard'
 import { UploadFileCards } from './uploadFileCards'
 import { Image } from '../../models/image'
 import { UploadStateImage } from '../../redux/reducers'
+import { AppBar } from '../appBar'
 
 export interface Props {
 	images: UploadStateImage[]
@@ -24,9 +25,10 @@ export interface Props {
 }
 
 export class Uploader extends React.Component<Props, {}> {
-	render() {
 
+	render() {
 		return <div>
+				<AppBar />
 				<UploadCard onDroppedFile={this.props.onDroppedFile} />
 				<UploadFileCards
 					images={this.props.images}
