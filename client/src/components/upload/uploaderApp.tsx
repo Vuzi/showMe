@@ -11,6 +11,7 @@ import {
 	} from '../../redux/actions'
 import { LoginState, UploadState } from '../../redux/reducers'
 import { UploadStateImage } from '../../redux/reducers'
+import { filenameTrim } from '../../utils/files'
 
 const mapStateToProps = (state: { upload: UploadState, login: LoginState }) => {
   return {
@@ -28,7 +29,7 @@ const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
 				modification: now,
 				description: '',
 				filename: '', // Create by the server
-				title: file.name,
+				title: filenameTrim(file.name),
 				tags: [],
 				url: file.name
 			}

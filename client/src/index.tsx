@@ -52,7 +52,7 @@ const RequireAuthRedux = connect((state: { upload: UploadState, login: LoginStat
   return state.login
 })(RequireAuthElement)
 
-const RequireAuth = (props: {children?: JSX.Element[]}) => (
+const RequireAuth = (props: {children?: JSX.Element}) => (
   <Provider store={store}>
     <RequireAuthRedux>
       {props.children}
