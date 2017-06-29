@@ -62,7 +62,7 @@ export class ConnectCard extends React.Component<Props, State> {
 			return <Redirect to={{ pathname: '/upload' }} />
 		else
 			return <PaperHoverable>
-					<Card className="login-card">
+				<Card className="login-card">
 					<CardTitle titleColor='grey' />
 					<CardText style={{ textAlign: 'center' }}>
 						You need to be logged in to upload images
