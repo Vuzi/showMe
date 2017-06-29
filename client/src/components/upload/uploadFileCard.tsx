@@ -30,6 +30,7 @@ import BadgeKO from './badgeKo'
 import BadgeOK from './badgeOk'
 import { Image } from '../../models/image'
 import { UploadStateImage } from '../../redux/reducers'
+import { imageUrl } from '../../utils/files'
 import { PaperHoverable } from '../paperHoverable'
 
 export interface Props {
@@ -149,10 +150,7 @@ export class UploadFileCard extends React.Component<Props, State> {
 			}
 
 			// Construct the file path..
-			const location = window.location
-			const port = location.port === '80' ? '' : `:${location.port}`
-			const url = `${location.protocol}//${location.hostname}${port}/api/image/raw/${image.url}`
-			// TODO deplace in some utils file
+			const url = imageUrl(image)
 
 			textFieldUrl = <div key={`url-${image.id}`}>
 				<TextField

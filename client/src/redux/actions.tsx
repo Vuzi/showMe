@@ -29,6 +29,10 @@ export const LOGIN_SUCCESS: EventType = 'LOGIN_SUCCESS'
 export const LOGIN_FAILED: EventType = 'LOGIN_FAILED'
 export const LOGOUT: EventType = 'LOGOUT'
 
+export const GALLERY_LOAD: EventType = 'GALLERY_LOAD'
+export const GALLERY_LOAD_SUCCESS: EventType = 'GALLERY_LOAD_SUCCESS'
+export const GALLERY_LOAD_FAILED: EventType = 'GALLERY_LOAD_FAILED'
+
 export const UPLOAD_ADD: EventType = 'UPLOAD_ADD'
 export const UPLOAD_EDIT: EventType = 'UPLOAD_EDIT'
 export const UPLOAD_REMOVE: EventType = 'UPLOAD_REMOVE'
@@ -45,9 +49,54 @@ export const UPLOAD_FAILED: EventType = 'UPLOAD_FAILED'
  * Actions creator
  */
 
+// -- Gallery
+export function loadGallery(): any {
+  return (dispatch: any) => {
+		// Gallery loading
+    dispatch({
+			type: GALLERY_LOAD
+		})
+
+		fetch('/api/image/all', {
+			method: 'GET',
+  		credentials: 'same-origin'
+		})
+		.then((res) => {
+			return res.json().then((json) => {
+				return { json, res }
+			})
+		})
+		.then((req) => {
+			if (req.res.status === 200)
+				dispatch(loadGallerySuccess(req.json as Image[]))
+			else
+				dispatch(loadGalleryFailed(req.json))
+		})
+		.catch((err) => {
+			dispatch(loadGalleryFailed(err))
+		})
+	}
+}
+
+export function loadGallerySuccess(images: Image[]): Action<Image[]> {
+	return {
+		type: GALLERY_LOAD_SUCCESS,
+		value: images
+	}
+}
+
+export function loadGalleryFailed(error: any): Action<any> {
+	return {
+		type: GALLERY_LOAD_FAILED,
+		value: error
+	}
+}
+
+// -- Login and Log out
+
 export function loginTest(): any {
   return (dispatch: any) => {
-		// Login stated
+		// Login started
     dispatch({
 			type: LOGIN
 		})
@@ -129,6 +178,8 @@ export function logout(): Action<void> {
 		value: null
 	}
 }
+
+// -- File upload
 
 export function uploadAdd(image: Image, file: File): Action<{image: Image, file: File}> {
 	return {

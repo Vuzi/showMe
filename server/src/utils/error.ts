@@ -1,22 +1,30 @@
 import { ErrorCode, UNKNOWN } from './errorCode'
 
-export interface FailureError {
+export interface Exception {
 	error: Error
 	code: ErrorCode
 	detail: any
 }
 
-export interface RejectionError extends FailureError {
+export interface ApiError extends Exception {
 	status: number
 }
 
-export function fail(error: Error | string, code?: ErrorCode, detail?: any): FailureError {
+
+function isException(object: any): object is Exception {
+    return object && object.error !== undefined;
+}
+
+
+export function fail(error: Error | Exception | string, code?: ErrorCode, detail?: any): Exception {
 	if (error instanceof Error) {
 		return {
 			error,
 			code : code || UNKNOWN,
 			detail
 		}
+	} else if(isException(error)) {
+		return error // Do not wrap
 	} else {
 		return {
 			error: Error(error),
@@ -26,7 +34,7 @@ export function fail(error: Error | string, code?: ErrorCode, detail?: any): Fai
 	}
 }
 
-export function reject(status: number, error: Error | string, code?: ErrorCode, detail?: any): RejectionError {
+export function reject(status: number, error: Error | Exception | string, code?: ErrorCode, detail?: any): ApiError {
 	return {
 		status,
 		...fail(error, code, detail)

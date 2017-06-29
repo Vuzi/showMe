@@ -27,6 +27,17 @@ router.get('/raw/:filename(*)', (req, res, next) => {
 	})
 })
 
+// Get all the images
+router.get('/all', needAuth, (req, res, next) => {
+	ImageService.list(req.session.user)
+	.then((images) => {
+		res.json(images)
+	})
+	.catch((err) => {
+		next(reject(400, err))
+	})
+})
+
 // Download an image's metadata
 router.get('/:filename(*)', (req, res, next) => {
 	ImageService.get(req.params.filename)

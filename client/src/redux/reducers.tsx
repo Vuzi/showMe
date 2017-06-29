@@ -7,6 +7,9 @@ import {
 	LOGIN_SUCCESS,
 	LOGIN_FAILED,
 	LOGOUT,
+	GALLERY_LOAD,
+	GALLERY_LOAD_SUCCESS,
+	GALLERY_LOAD_FAILED,
 	UPLOAD_ADD,
 	UPLOAD_EDIT,
 	UPLOAD_FAILED,
@@ -62,6 +65,39 @@ export function login(state: LoginState = {connected: false, connecting : false}
 	}
 }
 
+export interface GalleryState {
+	images: Image[] // All the images in the gallery
+	loading: boolean // If the gallery is loading
+	error?: any // TODO better type
+}
+
+export function gallery(state: GalleryState = {images: [], loading : false}, action: Action<any>): GalleryState {
+  switch (action.type) {
+		case GALLERY_LOAD:
+			return {
+				...state,
+				loading: true
+			}
+
+		case GALLERY_LOAD_SUCCESS:
+			return {
+				images: action.value as Image[],
+				loading: false,
+				error: undefined
+			}
+
+		case GALLERY_LOAD_FAILED:
+			return {
+				...state,
+				loading: false,
+				error: action.value
+			}
+
+		default:
+			return state
+	}
+}
+
 export interface UploadStateImage {
 	image: Image          // The image itself
 	file: File            // File to upload
@@ -79,13 +115,13 @@ export function upload(state: UploadState = { images: [] }, action: Action<any>)
   switch (action.type) {
 		case UPLOAD_ADD:
 			return {
-				images: state.images.concat([{
+				images: [{
 					image: action.value.image,
 					file: action.value.file,
 					percentUpload: 0,
 					uploaded: false,
 					uploading: false
-				}])
+				}].concat(state.images)
 			}
 
 		case UPLOAD_REMOVE:
@@ -174,6 +210,7 @@ export function upload(state: UploadState = { images: [] }, action: Action<any>)
 
 const app = combineReducers({
 	login,
+	gallery,
 	upload
 })
 

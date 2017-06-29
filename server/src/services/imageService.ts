@@ -4,7 +4,7 @@ import { Category } from '../models/category'
 import { Image } from '../models/image'
 import { User } from '../models/user'
 import { fail } from '../utils/error'
-import { URL_ALREADY_EXISTS } from '../utils/errorCode'
+import { NOT_FOUND, URL_ALREADY_EXISTS } from '../utils/errorCode'
 
 export function create(user: User, image: Image): Promise<Image> {
 	console.log(image) // TODO remove
@@ -63,9 +63,36 @@ export function get(url: string): Promise<Image> {
 		SELECT *
 		FROM image
 		WHERE url = $1
+		LIMIT 1
 	`, [
 		url
-	]).then((res) => res.rows[0])
+	]).then((res) => {
+		if(res.rowCount < 1)
+			return Promise.reject(fail("Image not found", NOT_FOUND))
+		else
+			return res.rows[0]
+	}).catch((e) => {
+		return Promise.reject(e)
+	})
+}
+
+// TODO add pagination
+export function list(user: User): Promise<Image[]> {
+	console.log(user)
+	// TODO handle private picture ?
+	return db.pool.query(`
+		SELECT *
+		FROM image
+		WHERE account_id = $1
+		ORDER BY creation DESC
+	`, [
+		user.id
+	]).then((res) => {
+		console.log(res.rows)
+		return res.rows
+	}).catch((e) => {
+		return Promise.reject(e instanceof Error ? fail(e) : e)
+	})
 }
 
 export function setCategory(image: Image, category: Category): Promise<Category> {

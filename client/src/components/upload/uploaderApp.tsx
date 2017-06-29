@@ -44,7 +44,7 @@ const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
 		},
 		onEditImage: (image: Image) => {
       dispatch(uploadEdit(image))
-		},
+		}
   }
 }
 

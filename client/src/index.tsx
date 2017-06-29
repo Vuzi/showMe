@@ -1,19 +1,25 @@
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
+import IconHistory from 'material-ui/svg-icons/action/history'
+import IconLock from 'material-ui/svg-icons/action/lock-open'
+import IconUpload from 'material-ui/svg-icons/file/file-upload'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
 import {
   BrowserRouter as Router,
   Link,
   Route,
   Switch
   } from 'react-router-dom'
+import { Redirect } from 'react-router-dom'
+import { RouteComponentProps } from 'react-router-dom'
 import * as injectTapEventPlugin from 'react-tap-event-plugin'
 import { applyMiddleware, createStore } from 'redux'
 import thunkMiddleware from 'redux-thunk'
+import { AppBar } from './components/appBar'
 import ConnectApp from './components/connect/connectApp'
+import GalleryApp from './components/gallery/galleryApp'
 import { Title } from './components/title'
 import UploaderApp from './components/upload/uploaderApp'
 import { Image } from './models/image'
@@ -33,7 +39,7 @@ const store = createStore(
   applyMiddleware(thunkMiddleware)
 )
 
-// Test is we are already connected
+// Test if we are already connected
 store.dispatch(loginTest())
 
 // Authentication helper TODO move
@@ -52,7 +58,7 @@ const RequireAuthRedux = connect((state: { upload: UploadState, login: LoginStat
   return state.login
 })(RequireAuthElement)
 
-const RequireAuth = (props: {children?: JSX.Element}) => (
+const RequireAuth = (props: { children?: JSX.Element }) => (
   <Provider store={store}>
     <RequireAuthRedux>
       {props.children}
@@ -67,10 +73,43 @@ const Login = () => (
 )
 
 const Upload = () => (
+  <Provider store={store}>
+    <UploaderApp />
+  </Provider>
+)
+
+const Gallery = () => (
+  <Provider store={store}>
+    <GalleryApp />
+  </Provider>
+)
+
+const AppContent = (props: RouteComponentProps<any>) => (
   <RequireAuth>
-    <Provider store={store}>
-      <UploaderApp />
-    </Provider>
+    <div>
+      <AppBar history={props.history} tabs={
+          [
+            {
+              label: 'Upload',
+              route : '/upload',
+              icon : <IconUpload/>
+            },
+            {
+              label: 'Recents',
+              route : '/gallery',
+              icon : <IconHistory/>
+            },
+            {
+              label: 'Log out',
+              route : '/logout',
+              icon : <IconLock/>
+            }
+          ]
+        } />
+      <Route path='/upload' component={ Upload }/>
+      <Route path='/gallery' component={ Gallery }/>
+      <Route path='/logout' component={ () => <h1>Log out TODO</h1> }/>
+    </div>
   </RequireAuth>
 )
 
@@ -80,19 +119,15 @@ const wrapperStyle: React.CSSProperties = {
 }
 
 const App = () => (
-  <MuiThemeProvider>
-    <div style={wrapperStyle}>
-      <Title />
-      <Router>
-        <Switch>
-          <Route path='/'exact component={ Upload }/>
-          <Route path='/upload'exact component={ Upload }/>
-          <Route path='/login' exact component={ Login }/>
-          { /*<Route component={ NotFound }/> TODO */ }
-        </Switch>
-      </Router>
-    </div>
-  </MuiThemeProvider>
+  <Router>
+    <MuiThemeProvider>
+      <div style={wrapperStyle}>
+        <Title />
+        <Route path='/login' exact component={ Login }/>
+        <Route component={ AppContent }/>
+      </div>
+    </MuiThemeProvider>
+  </Router>
 );
 
 ReactDOM.render(
