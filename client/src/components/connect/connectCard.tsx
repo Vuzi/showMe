@@ -78,6 +78,7 @@ export class ConnectCard extends React.Component<Props, State> {
 									buttonText="Login with Google"
 									onSuccess={(event: any) => this.responseGoogle(event)}
 									onFailure={() => this.showError()}
+									// style={{ fontFamilly: 'Roboto, sans-serif' }} TODO fix
 								/>
 							}
 					</CardText>

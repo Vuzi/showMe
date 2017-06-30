@@ -19,12 +19,14 @@ import AddIcon from 'material-ui/svg-icons/content/add'
 import TextField from 'material-ui/TextField'
 import * as React from 'react'
 import { Debounce } from 'react-throttle'
+import { CSSTransitionGroup } from 'react-transition-group'
 import { Image } from '../../models/image'
 import { imageUrl } from '../../utils/files'
 import { PaperHoverable } from '../paperHoverable'
 import { UrlTextField } from '../upload/urlTextField'
 
-export class GallerySearch extends React.Component<{ onChange: (value: string) => void }, {  }> {
+// Search field
+class GallerySearch extends React.Component<{ onChange: (value: string) => void, icon: JSX.Element }, {  }> {
 
 	onChange(value: string) {
 		this.props.onChange(value)
@@ -41,17 +43,13 @@ export class GallerySearch extends React.Component<{ onChange: (value: string) =
 					onChange={(_, value) => this.onChange(value)}
 				/>
 			</Debounce>
-			<SearchIcon style={{
-					float: 'right',
-					marginTop: '-35px',
-					marginRight: '11px'
-				}}
-			/>
+			{ this.props.icon }
 		</div>
 	}
 
 }
 
+// Gallery dialog
 export class GalleryDetail extends React.Component<{ image: Image }, { open: boolean }> {
 
 	constructor(props: { image: Image }) {
@@ -114,7 +112,6 @@ export class GalleryDetail extends React.Component<{ image: Image }, { open: boo
 			<h6 style={{
 				color: 'rgba(0, 0, 0, 0.3)',
 				fontWeight: 'normal',
-				
 				fontSize: '90%',
 				paddingBottom: '1px',
 				marginBottom: '5px'
@@ -204,12 +201,12 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 		const {loading, images} = this.props
 		const {selectedImage} = this.state
 
+		// Dialog on selecte image
 		const dialog = selectedImage < 0 ?
 			<span/> :
 			<GalleryDetail image={images[selectedImage]} />
 
-		const loader = <CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} style={{marginLeft: 'calc(50% - 40px)'}} />
-
+		// Gallery construction
 		const galleryContent = images.map((image, i) => {
 			const featured =
 				(i + 1) % 3 === 0                          // Every third images
@@ -250,20 +247,30 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 		}
 
 		const gallery = galleryContent.length > 0 ?
-			<GridList cellHeight={180} >
+			<GridList cellHeight={180} key={'gallery'} >
 				{ galleryContent }
 			</GridList> :
-			<span style={emptyGalleryStyle}>No image found :(</span>
+			<span style={emptyGalleryStyle} key={'empty-gallery'} >No image found :(</span>
+
+		// Gallery search
+		const searchIconStyle: React.CSSProperties = {
+			float: 'right',
+			marginTop: '-35px',
+			marginRight: '11px'
+		}
+		const searchIcon = <SearchIcon style={searchIconStyle} />
+		const loadingIcon = <CircularProgress key='loading' size={20} thickness={3} color={'#002e7a'} style={searchIconStyle} />
+		const gallerySearch = <GallerySearch onChange={(value) => this.filter(value)} icon={loading ? loadingIcon : searchIcon} />
 
 		return <div>
 			<PaperHoverable default={1} >
 				<Card>
-					<GallerySearch onChange={(value) => this.filter(value)} />
+					{ gallerySearch }
 					<Divider />
 					<CardText>
-						{
-							loading ? loader : gallery
-						}
+							{
+								gallery
+							}
 					</CardText>
 				</Card>
 			</PaperHoverable>

@@ -78,19 +78,6 @@ export function get(url: string): Promise<Image> {
 
 // TODO add pagination
 export function list(user: User, filter: string[]): Promise<Image[]> {
-	/**
-	 `
-		SELECT *
-		FROM image
-		WHERE
-			account_id = $1 AND (
-				title ~* $2
-				OR (SELECT COUNT(*) FROM unnest(tags) as tag WHERE tag ~* $2) > 0
-			)
-		ORDER BY creation DESC
-	`
-	 */
-
 	// TODO handle private picture ?
 	return db.pool.query(`
 		SELECT *
@@ -98,10 +85,11 @@ export function list(user: User, filter: string[]): Promise<Image[]> {
 		WHERE 
 			account_id = $1 AND (
 				(SELECT COUNT(*) FROM unnest($2::varchar[]) as tag WHERE metaphone(image.title, 4) = metaphone(tag, 4)) > 0 -- Sound
-				OR title ~* $3                                                                                   -- Title match
-				OR (SELECT COUNT(*) FROM unnest(tags) as tag WHERE tag ~* $3) > 0                                -- Tags
+				OR title ~* $3                                                                                              -- Title match
+				OR (SELECT COUNT(*) FROM unnest(tags) as tag WHERE tag ~* $3) > 0                                           -- Tags
 			)
 		ORDER BY creation DESC
+		LIMIT 50 -- Until pagination
 	`, [
 		user.id,
 		filter,
