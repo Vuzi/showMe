@@ -7,7 +7,7 @@ import {
 	CardTitle
 	} from 'material-ui/Card'
 import CircularProgress from 'material-ui/CircularProgress'
-import FlatButton from 'material-ui/FlatButton'
+import RaisedButton from 'material-ui/RaisedButton'
 import Snackbar from 'material-ui/Snackbar'
 import * as React from 'react'
 import * as Dropzone from 'react-dropzone'
@@ -16,6 +16,7 @@ import { Redirect } from 'react-router-dom'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { LoginState } from '../../redux/reducers'
 import { PaperHoverable } from '../paperHoverable'
+
 
 export interface Props {
 	onLogin: (token: string) => void
@@ -33,6 +34,8 @@ export class ConnectCard extends React.Component<Props, State> {
 			showError: false
     }
   }
+
+	googleElement: any = null
 
 	componentWillReceiveProps(props: Props) {
 		if (props.login.error)
@@ -71,15 +74,28 @@ export class ConnectCard extends React.Component<Props, State> {
 							{
 								connecting ?
 								<CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} /> :
-								<GoogleLogin
-									key='googleAuth'
-									disabled={this.props.login.connecting}
-									clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
-									buttonText="Login with Google"
-									onSuccess={(event: any) => this.responseGoogle(event)}
-									onFailure={() => this.showError()}
-									// style={{ fontFamilly: 'Roboto, sans-serif' }} TODO fix
-								/>
+								<span>
+									<RaisedButton
+										label="Login with Google"
+										icon={<img src="img/google_logo.png" height={25} style={{ marginRight: '1px', marginTop: '-3px' }} />} // TODO use better icon ?
+										primary={false}
+										onClick={() => { this.googleElement.signIn() }}
+									/>
+									<GoogleLogin
+										key='googleAuth'
+										ref={(input: any) => this.googleElement = input}
+										disabled={this.props.login.connecting}
+										clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
+										buttonText="Login with Google"
+										onSuccess={(event: any) => this.responseGoogle(event)}
+										onFailure={() => this.showError()}
+										style={{  // Hide the button
+												opacity: 0,
+												position: 'fixed',
+												top: '-100px'
+											}}
+									/>
+								</span>
 							}
 					</CardText>
 					<Snackbar

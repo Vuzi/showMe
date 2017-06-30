@@ -43,8 +43,7 @@ export default class Paster extends React.Component<Props, {}> {
 
 		for (const item of items) {
 			let file = item.getAsFile()
-			
-			// TODO also handle URLs
+			// TODO also handle URLs ..?
 
 			if(!!file) {
 				if (accepts(file, this.props.accept))
