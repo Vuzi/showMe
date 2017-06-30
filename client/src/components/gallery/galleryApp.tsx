@@ -12,8 +12,8 @@ const mapStateToProps = (state: { gallery: GalleryState }) => {
 
 const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
   return {
-    onLoad: () => {
-      dispatch(loadGallery())
+    needRefresh: (filter: string[]) => {
+      dispatch(loadGallery(filter))
     }
   }
 }

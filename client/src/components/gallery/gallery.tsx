@@ -7,22 +7,49 @@ import {
 import Chip from 'material-ui/Chip'
 import CircularProgress from 'material-ui/CircularProgress'
 import Dialog from 'material-ui/Dialog'
+import Divider from 'material-ui/Divider'
 import FlatButton from 'material-ui/FlatButton'
 import { GridList, GridTile } from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
+import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
+import SearchIcon from 'material-ui/svg-icons/action/search'
 import AddIcon from 'material-ui/svg-icons/content/add'
+import TextField from 'material-ui/TextField'
 import * as React from 'react'
+import { Debounce } from 'react-throttle'
 import { Image } from '../../models/image'
 import { imageUrl } from '../../utils/files'
 import { PaperHoverable } from '../paperHoverable'
 import { UrlTextField } from '../upload/urlTextField'
 
-export interface Props {
-	images: Image[]
-	loading: boolean
-	onLoad: () => void
+export class GallerySearch extends React.Component<{ onChange: (value: string) => void }, {  }> {
+
+	onChange(value: string) {
+		this.props.onChange(value)
+	}
+
+	render() {
+		return <div>
+			<Debounce time="400" handler="onChange">
+				<TextField
+					hintText="Search by title or tag"
+					style={{ marginLeft : '20px'}}
+					underlineShow={false}
+					fullWidth={true}
+					onChange={(_, value) => this.onChange(value)}
+				/>
+			</Debounce>
+			<SearchIcon style={{
+					float: 'right',
+					marginTop: '-35px',
+					marginRight: '11px'
+				}}
+			/>
+		</div>
+	}
+
 }
 
 export class GalleryDetail extends React.Component<{ image: Image }, { open: boolean }> {
@@ -130,6 +157,12 @@ export class GalleryDetail extends React.Component<{ image: Image }, { open: boo
 
 }
 
+export interface Props {
+	images: Image[]
+	loading: boolean
+	needRefresh: (filter: string[]) => void
+}
+
 export class Gallery extends React.Component<Props, { selectedImage: number }> {
 
 	constructor(props: Props) {
@@ -141,7 +174,13 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 
 	componentDidMount() {
 		// Load all
-		this.props.onLoad()
+		this.props.needRefresh([])
+	}
+
+	filter(values: string) {
+		const filter = values.split(' ').map(s => s.trim()).filter(s => s.length > 0)
+		this.props.needRefresh(filter)
+		this.deselectImage()
 	}
 
 	selectImage(index: number) {
@@ -165,50 +204,71 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 		const {loading, images} = this.props
 		const {selectedImage} = this.state
 
-		if(loading)
-			return <CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} />
-		else {
-			const gallery = images.map((image, i) => {
-				const featured = i % 3 == 2 && i > 0
-				const onClick = () => this.selectImage(i)
+		const dialog = selectedImage < 0 ?
+			<span/> :
+			<GalleryDetail image={images[selectedImage]} />
 
-				return <GridTile
-					key={image.id}
-					title={image.title}
-					subtitle={<span>{image.description}<br/><em>{image.tags.join(', ')}</em></span>}
-					containerElement={<div className={'gallery-image'} />}
-					cols={featured ? 2 : 1}
-					rows={featured ? 2 : 1}
-					actionIcon={<IconButton onClick={onClick} ><AddIcon color="white" /></IconButton>}
-				>
-					{
-						image.url.indexOf('.webm') >= 0 ? 
-						// TODO handle video with a format field
-						<video controls style={videoStyle}>
-							<source src={imageUrl(image)} type={'video/webm'} />
-						</video> :
-						<img src={imageUrl(image)} />
-					}
-				</GridTile>
-			})
+		const loader = <CircularProgress key='loading' size={80} thickness={5} color={'#002e7a'} style={{marginLeft: 'calc(50% - 40px)'}} />
 
-			const dialog = selectedImage < 0 ?
-				<span/> :
-				<GalleryDetail image={images[selectedImage]} />
+		const galleryContent = images.map((image, i) => {
+			const featured =
+				(i + 1) % 3 === 0                          // Every third images
+				|| (images.length - 1 == i && i % 3 === 0) // Or every last image ending with a space next
+				|| images.length <= 1                      // Or is there's only one image
+			const onClick = () => this.selectImage(i)
 
-			return <div>
-				<PaperHoverable>
-					<Card>
-						<CardText>
-							<GridList cellHeight={180} >
-								{ gallery }
-							</GridList>
-						</CardText>
-					</Card>
-				</PaperHoverable>
-				{ dialog }
-			</div>
+			const style: React.CSSProperties = {
+				boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
+			}
+
+			return <GridTile
+				key={image.id}
+				title={image.title}
+				subtitle={<span>{image.description}<br/><em>{image.tags.join(', ')}</em></span>}
+				containerElement={<div className={'gallery-image'} />}
+				cols={featured ? 2 : 1}
+				rows={featured ? 2 : 1}
+				actionIcon={<IconButton onClick={onClick} ><AddIcon color="white" /></IconButton>}
+				style={style}
+			>
+				{
+					image.url.indexOf('.webm') >= 0 ? 
+					// TODO handle video with a format field
+					<video controls style={videoStyle}>
+						<source src={imageUrl(image)} type={'video/webm'} />
+					</video> :
+					<img src={imageUrl(image)} />
+				}
+			</GridTile>
+		})
+
+		const emptyGalleryStyle: React.CSSProperties = {
+			fontSize: '120%',
+			color: '#C1C1C1',
+			display: 'block',
+			textAlign: 'center'
 		}
+
+		const gallery = galleryContent.length > 0 ?
+			<GridList cellHeight={180} >
+				{ galleryContent }
+			</GridList> :
+			<span style={emptyGalleryStyle}>No image found :(</span>
+
+		return <div>
+			<PaperHoverable default={1} >
+				<Card>
+					<GallerySearch onChange={(value) => this.filter(value)} />
+					<Divider />
+					<CardText>
+						{
+							loading ? loader : gallery
+						}
+					</CardText>
+				</Card>
+			</PaperHoverable>
+			{ dialog }
+		</div>
 	}
 
 }

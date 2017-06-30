@@ -138,8 +138,8 @@ export class UploadFileCard extends React.Component<Props, State> {
 			badge = <BadgeKO id={image.id} />
 
 		// Prepare URL
-		const textFieldUrl = uploaded ? <span key='no-url' /> : <UrlTextField url={imageUrl(image)} />
-		
+		const textFieldUrl = uploaded ? <UrlTextField url={imageUrl(image)} /> : <span key='no-url' />
+
 		return <div>
 				<PaperHoverable>
 					<Card style={cardStyle}>

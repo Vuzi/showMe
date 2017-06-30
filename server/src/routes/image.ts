@@ -6,7 +6,7 @@ import * as uuid from 'uuid'
 import { needAuth } from './login'
 import { Image } from '../models/image'
 import * as ImageService from '../services/imageService'
-import { FailureError, reject } from '../utils/error'
+import { Exception, reject } from '../utils/error'
 import { FILENAME_INVALID } from '../utils/errorCode'
 
 const router = Express.Router()
@@ -28,8 +28,10 @@ router.get('/raw/:filename(*)', (req, res, next) => {
 })
 
 // Get all the images
-router.get('/all', needAuth, (req, res, next) => {
-	ImageService.list(req.session.user)
+router.get('/list', needAuth, (req, res, next) => {
+	const filter: string[] = req.query.filter ? (req.query.filter + '').split(',').map(s => s.trim()).filter(s => s.length > 0) : []
+
+	ImageService.list(req.session.user, filter)
 	.then((images) => {
 		res.json(images)
 	})
@@ -79,7 +81,7 @@ router.post('/:url', needAuth, (req, res, next) => {
 		.then((image) => {
 			res.json(image)
 		})
-		.catch((err: FailureError) => {
+		.catch((err: Exception) => {
 			fs.unlink(filePath, () => {
 				next(reject(405, err.error, err.code, newImage))
 			})

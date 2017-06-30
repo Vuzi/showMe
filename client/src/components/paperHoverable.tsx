@@ -31,9 +31,11 @@ export class PaperHoverable extends React.Component<Props, State> {
 	}
 
 	render() {
+		const defaultValue = this.props.default || 0
+
 		return <Paper
 				style={this.props.style}
-				zDepth={this.state.isHovered ? 1 : this.props.default || 0}
+				zDepth={this.state.isHovered ? defaultValue + 1 : defaultValue}
 				onMouseOver={() => this.onMouseOver()}
 				onMouseOut={() => this.onMouseOut()}
 			>

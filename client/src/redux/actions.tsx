@@ -50,16 +50,18 @@ export const UPLOAD_FAILED: EventType = 'UPLOAD_FAILED'
  */
 
 // -- Gallery
-export function loadGallery(): any {
+export function loadGallery(filter: string[]): any {
   return (dispatch: any) => {
 		// Gallery loading
     dispatch({
 			type: GALLERY_LOAD
 		})
 
-		fetch('/api/image/all', {
+		const httpFilter = 'filter=' + filter.map(s => encodeURIComponent(s)).join(',')
+
+		fetch(`/api/image/list?${httpFilter}`, {
 			method: 'GET',
-  		credentials: 'same-origin'
+  		credentials: 'same-origin',
 		})
 		.then((res) => {
 			return res.json().then((json) => {

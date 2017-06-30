@@ -22,7 +22,7 @@ export class UrlTextField extends React.Component<Props, {}> {
 
 			return <div key={`url-${url}`}>
 				<TextField
-					defaultValue={url}
+					value={url}
 					floatingLabelText='Image URL'
 					style={{ width: 'calc(100% - 70px)' }}
 				/>

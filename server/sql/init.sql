@@ -1,3 +1,4 @@
+CREATE EXTENSION fuzzystrmatch;
 
 -- Accounts table (no password, because we use Google accounts)
 CREATE TABLE account (
@@ -22,7 +23,7 @@ CREATE TABLE category (
 CREATE TABLE image (
 	id           UUID          PRIMARY KEY,
 	url          TEXT          NOT NULL UNIQUE,
-	title        VARCHAR(64)   NOT NULL,
+	title        VARCHAR(64)   NOT NULL, -- TODO add indexe everywhere
 	filename     VARCHAR(64)   NOT NULL,
 	description  TEXT,
 	creation     TIMESTAMP     NOT NULL,
