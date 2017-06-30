@@ -212,6 +212,6 @@ const app = combineReducers({
 	login,
 	gallery,
 	upload
-})
+} as any) // Makes TS 2.4 happy
 
 export default app

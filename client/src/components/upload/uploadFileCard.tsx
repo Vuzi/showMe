@@ -15,19 +15,17 @@ import MenuItem from 'material-ui/MenuItem'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import SelectField from 'material-ui/SelectField'
-import OpenIcon from 'material-ui/svg-icons/action/open-in-new'
 import ErrorIcon from 'material-ui/svg-icons/content/clear'
-import CopyIcon from 'material-ui/svg-icons/content/content-copy'
 import CheckIcon from 'material-ui/svg-icons/navigation/check'
 import TextField from 'material-ui/TextField'
 import * as React from 'react'
-import * as CopyToClipboard from 'react-copy-to-clipboard'
 import * as Dropzone from 'react-dropzone'
 import * as FileImage from 'react-file-image'
 import GoogleLogin from 'react-google-login'
 import { CSSTransitionGroup } from 'react-transition-group'
 import BadgeKO from './badgeKo'
 import BadgeOK from './badgeOk'
+import { UrlTextField } from './urlTextField'
 import { Image } from '../../models/image'
 import { UploadStateImage } from '../../redux/reducers'
 import { imageUrl } from '../../utils/files'
@@ -140,33 +138,8 @@ export class UploadFileCard extends React.Component<Props, State> {
 			badge = <BadgeKO id={image.id} />
 
 		// Prepare URL
-		let textFieldUrl = <span key='no-url' />
-		if (uploaded) {
-			const style = {
-				float: 'right',
-				width: 'auto',
-				marginTop: '30px',
-				cursor: 'pointer'
-			}
-
-			// Construct the file path..
-			const url = imageUrl(image)
-
-			textFieldUrl = <div key={`url-${image.id}`}>
-				<TextField
-					defaultValue={url}
-					floatingLabelText='Image URL'
-					style={{ width: 'calc(100% - 70px)' }}
-				/>
-				<div style={style} >
-					<OpenIcon fontSize='10' onClick={() => window.open(url, '_blank')} style={{ marginRight: '5px' }} />
-					<CopyToClipboard text={url} onCopy={() => console.log('copied')}>
-						<CopyIcon fontSize='10' />
-					</CopyToClipboard>
-				</div>
-			</div>
-		}
-
+		const textFieldUrl = uploaded ? <span key='no-url' /> : <UrlTextField url={imageUrl(image)} />
+		
 		return <div>
 				<PaperHoverable>
 					<Card style={cardStyle}>

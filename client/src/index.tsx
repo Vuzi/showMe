@@ -4,8 +4,8 @@ import IconLock from 'material-ui/svg-icons/action/lock-open'
 import IconUpload from 'material-ui/svg-icons/file/file-upload'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { Provider } from 'react-redux'
 import { connect } from 'react-redux'
+import { Provider } from 'react-redux'
 import {
   BrowserRouter as Router,
   Link,
@@ -56,7 +56,7 @@ class RequireAuthElement extends React.Component<LoginState, {}> {
 
 const RequireAuthRedux = connect((state: { upload: UploadState, login: LoginState }) => {
   return state.login
-})(RequireAuthElement)
+})(RequireAuthElement as any) // Makes TS 2.4 happy
 
 const RequireAuth = (props: { children?: JSX.Element }) => (
   <Provider store={store}>
