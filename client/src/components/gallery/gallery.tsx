@@ -14,14 +14,14 @@ import IconButton from 'material-ui/IconButton'
 import Paper from 'material-ui/Paper'
 import RaisedButton from 'material-ui/RaisedButton'
 import Subheader from 'material-ui/Subheader'
+import LaunchIcon from 'material-ui/svg-icons/action/launch'
 import SearchIcon from 'material-ui/svg-icons/action/search'
-import AddIcon from 'material-ui/svg-icons/content/add'
 import TextField from 'material-ui/TextField'
 import * as React from 'react'
 import { Debounce } from 'react-throttle'
 import { CSSTransitionGroup } from 'react-transition-group'
 import { Image } from '../../models/image'
-import { imageUrl } from '../../utils/files'
+import { imageThumbnailUrl, imageUrl } from '../../utils/files'
 import { PaperHoverable } from '../paperHoverable'
 import { UrlTextField } from '../upload/urlTextField'
 
@@ -225,7 +225,7 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 				containerElement={<div className={'gallery-image'} />}
 				cols={featured ? 2 : 1}
 				rows={featured ? 2 : 1}
-				actionIcon={<IconButton onClick={onClick} ><AddIcon color="white" /></IconButton>}
+				actionIcon={<IconButton onClick={onClick} ><LaunchIcon color="white" /></IconButton>}
 				style={style}
 			>
 				{
@@ -234,7 +234,7 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 					<video controls style={videoStyle}>
 						<source src={imageUrl(image)} type={'video/webm'} />
 					</video> :
-					<img src={imageUrl(image)} />
+					<img src={imageThumbnailUrl(image)} />
 				}
 			</GridTile>
 		})

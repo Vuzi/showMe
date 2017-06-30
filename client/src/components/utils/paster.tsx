@@ -42,11 +42,16 @@ export default class Paster extends React.Component<Props, {}> {
 		const rejectedFiles: File[] = []
 
 		for (const item of items) {
-			const file = item.getAsFile()
-			if (accepts(file, this.props.accept))
-				acceptedFiles.push(file)
-			else
-				rejectedFiles.push(file)
+			let file = item.getAsFile()
+			
+			// TODO also handle URLs
+
+			if(!!file) {
+				if (accepts(file, this.props.accept))
+					acceptedFiles.push(file)
+				else
+					rejectedFiles.push(file)
+			}
 		}
 
 		this.props.onPastedFiles(acceptedFiles, rejectedFiles)

@@ -2,25 +2,52 @@ import * as Express from 'express'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
 import * as path from 'path'
+import * as sharp from 'sharp'
 import * as uuid from 'uuid'
 import { needAuth } from './login'
 import { Image } from '../models/image'
 import * as ImageService from '../services/imageService'
 import { Exception, reject } from '../utils/error'
-import { FILENAME_INVALID } from '../utils/errorCode'
+import { FILENAME_INVALID, IMAGE_NOT_FOUND } from '../utils/errorCode'
 
 const router = Express.Router()
 
 // TODO externalise
 const storagePath = __dirname + '/../../images/'
+const storagePathThumbnail = storagePath + 'thumbnails/'
 
 // Download an image
 router.get('/raw/:filename(*)', (req, res, next) => {
 	ImageService.get(req.params.filename)
 	.then((image) => {
-		// Make static ?
-		res.contentType(mime.lookup(image.filename) || 'application/octet-stream')
-		fs.createReadStream(storagePath + image.filename).pipe(res)
+		const filePath = storagePath + image.filename
+
+		fs.exists(filePath, (exist) => {
+			if(!exist)
+				return next(reject(500, 'Image not found', IMAGE_NOT_FOUND))
+			 
+			res.contentType(mime.lookup(image.filename) || 'application/octet-stream')
+			fs.createReadStream(filePath).pipe(res)
+		})
+	})
+	.catch((err) => {
+		next(reject(400, err))
+	})
+})
+
+// Download a thumbnail
+router.get('/preview/:filename(*)', (req, res, next) => {
+	ImageService.get(req.params.filename)
+	.then((image) => {
+		const filePath = storagePathThumbnail + image.filename
+
+		fs.exists(filePath, (exist) => {
+			if(!exist)
+				return next(reject(500, 'Thumbnail image not found', IMAGE_NOT_FOUND))
+			 
+			res.contentType(mime.lookup(image.filename) || 'application/octet-stream')
+			fs.createReadStream(filePath).pipe(res)
+		})
 	})
 	.catch((err) => {
 		next(reject(400, err))
@@ -64,6 +91,7 @@ router.post('/:url', needAuth, (req, res, next) => {
 
 	const internalFileName = uuid() + path.extname(url)
 	const filePath = storagePath + internalFileName
+	const fileThumbnailPath = storagePathThumbnail + internalFileName
 
 	const onEnd = () => {
 		const newImage: Image = {
@@ -89,8 +117,17 @@ router.post('/:url', needAuth, (req, res, next) => {
 	}
 
 	req.pipe(fs.createWriteStream(filePath))
-	.on('end', onEnd)
-	.on('close', onEnd)
+	.on('finish', () => {
+		fs.createReadStream(filePath)
+		.pipe(sharp().resize(400))
+		.pipe(fs.createWriteStream(fileThumbnailPath))
+		.on('finish', onEnd)
+		.on('error', (err) => {
+			fs.unlink(filePath, () => {
+				next(reject(500, err))
+			})
+		})
+	})
 	.on('error', (err) => {
 		next(reject(500, err))
 	})

@@ -9,3 +9,9 @@ export function imageUrl(image: Image) {
 	const port = location.port === '80' ? '' : `:${location.port}`
 	return `${location.protocol}//${location.hostname}${port}/api/image/raw/${image.url}`
 }
+
+export function imageThumbnailUrl(image: Image) {
+	const location = window.location
+	const port = location.port === '80' ? '' : `:${location.port}`
+	return `${location.protocol}//${location.hostname}${port}/api/image/preview/${image.url}`
+}
