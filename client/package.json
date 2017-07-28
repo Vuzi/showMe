@@ -19,6 +19,7 @@
     "react-redux": "^5.0.4",
     "react-router-dom": "^4.1.1",
     "react-tap-event-plugin": "^2.0.1",
+    "react-throttle": "^0.3.0",
     "react-transition-group": "^1.1.3",
     "react-visibility-sensor": "^3.10.0",
     "redux-thunk": "^2.2.0",
