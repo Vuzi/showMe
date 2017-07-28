@@ -5,15 +5,15 @@ import * as path from 'path'
 import * as sharp from 'sharp'
 import * as uuid from 'uuid'
 import { needAuth } from './login'
-import { Image } from '../models/image'
-import * as ImageService from '../services/imageService'
-import { Exception, reject } from '../utils/error'
-import { FILENAME_INVALID, IMAGE_NOT_FOUND } from '../utils/errorCode'
+import { Image } from '../../models/image'
+import * as ImageService from '../../services/imageService'
+import { Exception, reject } from '../../utils/error'
+import { FILENAME_INVALID, IMAGE_NOT_FOUND } from '../../utils/errorCode'
 
 const router = Express.Router()
 
 // TODO externalise
-const storagePath = __dirname + '/../../images/'
+const storagePath = __dirname + '/../../../images/'
 const storagePathThumbnail = storagePath + 'thumbnails/'
 
 // Download an image
@@ -24,7 +24,7 @@ router.get('/raw/:filename(*)', (req, res, next) => {
 
 		fs.exists(filePath, (exist) => {
 			if(!exist)
-				return next(reject(500, 'Image not found', IMAGE_NOT_FOUND))
+				return next(reject(404, 'Image not found', IMAGE_NOT_FOUND))
 			 
 			res.contentType(mime.lookup(image.filename) || 'application/octet-stream')
 			fs.createReadStream(filePath).pipe(res)
@@ -43,7 +43,7 @@ router.get('/preview/:filename(*)', (req, res, next) => {
 
 		fs.exists(filePath, (exist) => {
 			if(!exist)
-				return next(reject(500, 'Thumbnail image not found', IMAGE_NOT_FOUND))
+				return next(reject(404, 'Thumbnail image not found', IMAGE_NOT_FOUND))
 			 
 			res.contentType(mime.lookup(image.filename) || 'application/octet-stream')
 			fs.createReadStream(filePath).pipe(res)

@@ -1,10 +1,10 @@
 import * as Express from 'express'
 import * as uuid from 'uuid'
 import { needAuth } from './login'
-import { Category } from '../models/category'
-import { Image } from '../models/image'
-import * as CategoryService from '../services/categoryService'
-import { reject } from '../utils/error'
+import { Category } from '../../models/category'
+import { Image } from '../../models/image'
+import * as CategoryService from '../../services/categoryService'
+import { reject } from '../../utils/error'
 
 const router = Express.Router()
 

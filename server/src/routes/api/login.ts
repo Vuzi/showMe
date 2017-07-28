@@ -1,8 +1,8 @@
 import * as Express from 'express'
-import { User } from '../models/user'
-import * as UserService from '../services/userService'
-import { reject } from '../utils/error'
-import { AUTH_REQUIRED } from '../utils/errorCode'
+import { User } from '../../models/user'
+import * as UserService from '../../services/userService'
+import { reject } from '../../utils/error'
+import { AUTH_REQUIRED } from '../../utils/errorCode'
 
 // Auth middleware
 export function needAuth(req: any, res: any, next: any) {

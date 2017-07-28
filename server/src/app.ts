@@ -5,9 +5,7 @@ import * as session from 'express-session'
 import * as fs from 'fs'
 import * as logger from 'morgan'
 import * as path from 'path'
-import categoryEndpoint from './routes/category'
-import imageEndpoint from './routes/image'
-import loginEndpoint from './routes/login'
+import apiEndpoint from './routes/api/api'
 import { reject } from './utils/error'
 import { NOT_FOUND, UNKNOWN } from './utils/errorCode'
 
@@ -27,19 +25,13 @@ app.use(session({
 }))
 
 // Api
-const apiRouter = Express.Router()
-
-apiRouter.use('/user/', loginEndpoint)
-apiRouter.use('/image/', imageEndpoint)
-apiRouter.use('/category/', categoryEndpoint)
-
-app.use('/api/', apiRouter)
+app.use('/api/', apiEndpoint)
 
 // Use graphql endpoint
 // graphqlEndpoint(app)
 
 // Entrypoint (everything not starting by '/api')
-app.get(/^((?!^\/api).)*$/, (req, res, next) => {
+app.get(/^.*$/, (req, res, next) => {
 	const index = path.join(__dirname, '../public/index.html')
 	fs.stat(index, (err, file) => {
 
