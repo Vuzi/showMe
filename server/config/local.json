@@ -12,5 +12,9 @@
 			"max": 10,
 			"idleTimeoutMillis": 30000
 		}
+	},
+	"storage": {
+		"images": "images",
+		"thumbnails": "images/thumbnails"
 	}
 }

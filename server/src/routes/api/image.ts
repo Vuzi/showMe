@@ -1,3 +1,4 @@
+import * as config from 'config'
 import * as Express from 'express'
 import * as fs from 'fs'
 import * as mime from 'mime-types'
@@ -13,14 +14,14 @@ import { FILENAME_INVALID, IMAGE_NOT_FOUND } from '../../utils/errorCode'
 const router = Express.Router()
 
 // TODO externalise
-const storagePath = __dirname + '/../../../images/'
-const storagePathThumbnail = storagePath + 'thumbnails/'
+const storagePath = path.join(__dirname, '/../../../', config.get<string>('storage.images'))
+const storagePathThumbnail = path.join(__dirname, '/../../../', config.get<string>('storage.thumbnails'))
 
 // Download an image
 router.get('/raw/:filename(*)', (req, res, next) => {
 	ImageService.get(req.params.filename)
 	.then((image) => {
-		const filePath = storagePath + image.filename
+		const filePath = path.join(storagePath, image.filename)
 
 		fs.exists(filePath, (exist) => {
 			if(!exist)
@@ -39,7 +40,7 @@ router.get('/raw/:filename(*)', (req, res, next) => {
 router.get('/preview/:filename(*)', (req, res, next) => {
 	ImageService.get(req.params.filename)
 	.then((image) => {
-		const filePath = storagePathThumbnail + image.filename
+		const filePath = path.join(storagePathThumbnail, image.filename)
 
 		fs.exists(filePath, (exist) => {
 			if(!exist)
