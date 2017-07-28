@@ -22,8 +22,6 @@ const mapStateToProps = (state: { upload: UploadState, login: LoginState }) => {
 const mapDispatchToProps = (dispatch: (action: Action<any>) => any) => {
   return {
     onDroppedFile: (file: File) => {
-			 console.log(file)
-
 			const now = new Date()
 			const newImage: Image = {
 				id: uuid(),

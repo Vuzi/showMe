@@ -26,9 +26,14 @@ app.use(session({
 	saveUninitialized: false
 }))
 
-app.use('/api/user/', loginEndpoint)
-app.use('/api/image/', imageEndpoint)
-app.use('/api/category/', categoryEndpoint)
+// Api
+const apiRouter = Express.Router()
+
+apiRouter.use('/user/', loginEndpoint)
+apiRouter.use('/image/', imageEndpoint)
+apiRouter.use('/category/', categoryEndpoint)
+
+app.use('/api/', apiRouter)
 
 // Use graphql endpoint
 // graphqlEndpoint(app)

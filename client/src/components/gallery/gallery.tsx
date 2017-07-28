@@ -215,6 +215,7 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 			const onClick = () => this.selectImage(i)
 
 			const style: React.CSSProperties = {
+				backgroundImage: 'url(img/footer_lodyas.png)',
 				boxShadow: 'rgba(0, 0, 0, 0.12) 0px 1px 6px, rgba(0, 0, 0, 0.12) 0px 1px 4px'
 			}
 
