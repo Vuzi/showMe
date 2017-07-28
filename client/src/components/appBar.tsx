@@ -24,6 +24,7 @@ interface AppTab {
 interface Props {
   history: History
   tabs: AppTab[]
+  current: string
 }
 
 export class AppBar extends React.Component<Props, { selectedIndex: number }> {
@@ -33,7 +34,19 @@ export class AppBar extends React.Component<Props, { selectedIndex: number }> {
 		this.state = {
     	selectedIndex: 0,
 		}
-	}
+  }
+
+  componentWillReceiveProps(newProps: Props) {
+    // Select the tab according to the current path
+    const selected = newProps.tabs.map((tab, i) => ({ tab, i })).filter((tab) => {
+      return newProps.current.indexOf(tab.tab.route) === 0
+    })[0]
+
+    if(selected)
+      this.setState({selectedIndex: selected.i})
+    else
+      this.setState({selectedIndex: 0})
+  }
 
   select(index: number) {
     this.props.history.push(this.props.tabs[index].route)

@@ -23,6 +23,7 @@ export interface LoginState {
 	connected: boolean
 	connecting: boolean
 	user?: User
+	redirectTo?: string
 	error?: any // TODO better type
 }
 
@@ -33,6 +34,7 @@ export function login(state: LoginState = {connected: false, connecting : false}
 				connected : false,
 				connecting : true,
 				user: undefined,
+				redirectTo: undefined,
 				error: undefined as any
 			}
 
@@ -40,7 +42,8 @@ export function login(state: LoginState = {connected: false, connecting : false}
 			return {
 				connected : true,
 				connecting : false,
-				user: action.value,
+				user: action.value.user,
+				redirectTo: action.value.redirectTo,
 				error: undefined as any
 			}
 
@@ -49,6 +52,7 @@ export function login(state: LoginState = {connected: false, connecting : false}
 				connected : false,
 				connecting : false,
 				user: undefined,
+				redirectTo: undefined,
 				error: action.value
 			}
 

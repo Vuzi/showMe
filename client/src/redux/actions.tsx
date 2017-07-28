@@ -96,7 +96,7 @@ export function loadGalleryFailed(error: any): Action<any> {
 
 // -- Login and Log out
 
-export function loginTest(): any {
+export function loginTest(redirectTo?: string): any {
   return (dispatch: any) => {
 		// Login started
     dispatch({
@@ -115,7 +115,7 @@ export function loginTest(): any {
 			})
 			.then((req) => {
 				if (req.res.status === 200)
-					dispatch(loginSuccess(req.json as User)) // TODO fix ts
+					dispatch(loginSuccess(req.json as User, redirectTo)) // TODO fix ts
 				else if (req.res.status === 403)
 					dispatch(logout())
 				else
@@ -160,10 +160,13 @@ export function login(token: string): any {
 	}
 }
 
-export function loginSuccess(user: User): Action<User> {
+export function loginSuccess(user: User, path?: string): Action<{ user: User, redirectTo?: string }> {
 	return {
 		type: LOGIN_SUCCESS,
-		value: user
+		value: {
+			user : user,
+			redirectTo : path
+		}
 	}
 }
 

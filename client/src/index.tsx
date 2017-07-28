@@ -4,8 +4,8 @@ import IconLock from 'material-ui/svg-icons/action/lock-open'
 import IconUpload from 'material-ui/svg-icons/file/file-upload'
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import { connect } from 'react-redux'
 import { Provider } from 'react-redux'
+import { connect } from 'react-redux'
 import {
   BrowserRouter as Router,
   Link,
@@ -39,32 +39,48 @@ const store = createStore(
   applyMiddleware(thunkMiddleware)
 )
 
-// Test if we are already connected
-store.dispatch(loginTest())
-
 // Authentication helper TODO move
-class RequireAuthElement extends React.Component<LoginState, {}> {
+interface RequireAuthElementProps extends LoginState {
+  testLogin: () => {}
+}
+
+class RequireAuthElement extends React.Component<RequireAuthElementProps, {}> {
+  componentDidMount() {
+    // Test if we need to test the connecion
+    if(!this.props.connected && !this.props.connecting) {
+      console.log(`needs to test login ! => `)
+      this.props.testLogin()
+    }
+  }
+
   render() {
     const { connected } = this.props
 
+    // Either show the protected component, or the login form
     if (connected)
       return this.props.children as JSX.Element
     else
-      return <Redirect to={{ pathname: '/login' }} />
+      return <Redirect to={ '/login' }/> // Login will handle the redirection
   }
 }
 
 const RequireAuthRedux = connect((state: { upload: UploadState, login: LoginState }) => {
   return state.login
+}, (dispatch: (action: Action<any>) => any, ownProps: { redirectTo?: string }) => {
+  return {
+    testLogin : () => {
+      dispatch(loginTest(ownProps.redirectTo))
+    }
+  }
 })(RequireAuthElement as any) // Makes TS 2.4 happy
 
-const RequireAuth = (props: { children?: JSX.Element }) => (
-  <Provider store={store}>
-    <RequireAuthRedux>
+const RequireAuth = (props: { redirectTo: string, children?: JSX.Element }) => {
+  return (<Provider store={store}>
+    <RequireAuthRedux redirectTo={props.redirectTo} >
       {props.children}
     </RequireAuthRedux>
-  </Provider>
-)
+  </Provider>)
+}
 
 const Login = () => (
   <Provider store={store}>
@@ -85,7 +101,7 @@ const Gallery = () => (
 )
 
 const AppContent = (props: RouteComponentProps<any>) => (
-  <RequireAuth>
+  <RequireAuth redirectTo={props.location.pathname} >
     <div>
       <AppBar history={props.history} tabs={
           [
@@ -105,7 +121,7 @@ const AppContent = (props: RouteComponentProps<any>) => (
               icon : <IconLock/>
             }
           ]
-        } />
+        } current={props.location.pathname} />
       <Route path='/upload' component={ Upload }/>
       <Route path='/gallery' component={ Gallery }/>
       <Route path='/logout' component={ () => <h1>Log out TODO</h1> }/>

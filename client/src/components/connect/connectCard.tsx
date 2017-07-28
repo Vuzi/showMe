@@ -59,11 +59,12 @@ export class ConnectCard extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { connected, connecting } = this.props.login
+		const { connected, connecting, redirectTo } = this.props.login
 
-		if (connected)
-			return <Redirect to={{ pathname: '/upload' }} />
-		else
+		if (connected) {
+			const redirectToFixed = redirectTo ? redirectTo.indexOf('/login') === 0 ? '/upload' : redirectTo : '/upload'
+			return <Redirect to={ redirectToFixed } />
+		} else
 			return <PaperHoverable>
 				<Card className="login-card">
 					<CardTitle titleColor='grey' />
