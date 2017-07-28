@@ -69,7 +69,7 @@ router.get('/list', needAuth, (req, res, next) => {
 })
 
 // Download an image's metadata
-router.get('/:filename(*)', (req, res, next) => {
+router.get('/:filename(*)', needAuth, (req, res, next) => {
 	ImageService.get(req.params.filename)
 	.then((image) => {
 		res.json(image)

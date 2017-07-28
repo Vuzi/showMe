@@ -3,15 +3,23 @@ import * as cookieParser from 'cookie-parser'
 import * as Express from 'express'
 import * as session from 'express-session'
 import * as fs from 'fs'
-import * as logger from 'morgan'
+import * as morgan from 'morgan'
+import logger from './utils/logger'
 import * as path from 'path'
 import apiEndpoint from './routes/api/api'
 import { reject } from './utils/error'
 import { NOT_FOUND, UNKNOWN } from './utils/errorCode'
 
+logger.info('Show me app started')
+
 const app = Express()
 
-app.use(logger('dev'))
+app.use(morgan(app.get('env'), { stream: {
+    write: (message: string) => {
+      logger.info(message.trim());
+    }
+	}
+}))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
@@ -27,21 +35,17 @@ app.use(session({
 // Api
 app.use('/api/', apiEndpoint)
 
-// Use graphql endpoint
-// graphqlEndpoint(app)
-
-// Entrypoint (everything not starting by '/api')
+// Entrypoint
 app.get(/^.*$/, (req, res, next) => {
 	const index = path.join(__dirname, '../public/index.html')
 	fs.stat(index, (err, file) => {
-
 		if (err) // Should not happen
 			return next(reject(500, 'Website not available'))
 
-    res.writeHead(200, {
+		res.writeHead(200, {
 			'Content-Type': 'text/html',
 			'Content-Length': file.size
-    })
+		})
 
 		fs.createReadStream(index).pipe(res)
 	})
@@ -50,27 +54,24 @@ app.get(/^.*$/, (req, res, next) => {
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
 	next(reject(404, 'Not Found', NOT_FOUND))
-});
+})
 
-// Error handlers
-// if (app.get('env') === 'development') {
+// Error handler
 app.use((error: any, req: any, res: any, next: any) => {
-	res.status(error.status || 500)
+	const status = error.status || 500
+	const code = error.code || UNKNOWN
+	const message = error.error ? error.error.message : error.message
+	const detail = error.detail
+	
+	logger.warn('Some error occured %s (%s)', code, message, error)
+
+	res.status(status)
 	res.json({
-		message: error.error ? error.error.message : error.message,
+		message: message,
 		error: error.error ? error.error : error,
-		code: error.code || UNKNOWN,
-		detail: error.detail
+		code: code,
+		detail: detail
 	})
 })
-/*} else {
-	app.use((error: any, req: any, res: any, next: any) => {
-		res.status(error['status'] || 500)
-		res.json({
-			message: error.message,
-			error: {}
-		})
-	})
-}*/
 
 export default app

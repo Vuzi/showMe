@@ -12,7 +12,7 @@ export interface ApiError extends Exception {
 
 
 function isException(object: any): object is Exception {
-    return object && object.error !== undefined;
+  return object && object.error !== undefined;
 }
 
 

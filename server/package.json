@@ -1,43 +1,44 @@
 {
-  "name": "graphqltest",
+  "name": "showme-server",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run build:live",
-    "build:live": "nodemon --exec ./node_modules/.bin/ts-node -- ./src/index.ts"
+    "start": "npm run start:dev",
+    "start:prod": "cross-env NODE_ENV=prod ts-node -F ./src/index.ts",
+    "start:dev": "cross-env NODE_ENV=dev nodemon --exec ts-node -- ./src/index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@types/config": "0.0.32",
-    "@types/express-session": "0.0.32",
-    "@types/mime-types": "^2.1.0",
-    "@types/pg": "^6.1.39",
-    "@types/sanitize-filename": "^1.1.28",
-    "@types/uuid": "^2.0.29",
-    "babel-register": "^6.24.1",
     "body-parser": "~1.17.1",
     "config": "^1.26.1",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.3",
-    "ejs": "~2.5.6",
     "express": "^4.15.2",
-    "express-fileupload": "^0.1.2",
     "express-session": "^1.15.2",
     "google-auth-library": "^0.10.0",
-    "graphql": "^0.9.3",
-    "import-export": "^1.0.1",
-    "less-middleware": "~2.2.0",
     "mime-types": "^2.1.15",
     "morgan": "~1.8.1",
     "pg": "^6.1.5",
-    "sanitize-filename": "^1.6.1",
     "serve-favicon": "~2.4.2",
-    "uuid": "^3.0.1"
+    "sharp": "^0.18.2",
+    "uuid": "^3.0.1",
+    "winston": "^2.3.1"
   },
   "devDependencies": {
+    "@types/body-parser": "^1.16.4",
+    "@types/config": "0.0.32",
+    "@types/cookie-parser": "^1.4.0",
     "@types/express": "^4.0.35",
+    "@types/express-session": "0.0.32",
+    "@types/mime-types": "^2.1.0",
+    "@types/morgan": "^1.7.32",
     "@types/node": "^7.0.13",
+    "@types/pg": "^6.1.39",
+    "@types/serve-favicon": "^2.2.28",
+    "@types/sharp": "^0.17.2",
+    "@types/uuid": "^2.0.29",
+    "cross-env": "^5.0.1",
     "nodemon": "^1.11.0",
-    "ts-node": "^3.0.2",
-    "typescript": "^2.2.2"
+    "ts-node": "^3.3.0",
+    "typescript": "^2.4.2"
   }
 }

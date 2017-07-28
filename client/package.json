@@ -1,26 +1,13 @@
 {
-  "name": "client",
-  "version": "1.0.0",
-  "private": true,
-  "main": "index.js",
+  "name": "showme-client",
+  "version": "0.0.0",
   "scripts": {
     "start": "npm run build:live",
     "build:live": "webpack --watch",
+    "build": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "@types/material-ui": "^0.17.7",
-    "@types/react": "^15.0.23",
-    "@types/react-copy-to-clipboard": "^4.2.2",
-    "@types/react-dom": "^15.5.0",
-    "@types/react-dropzone": "0.0.32",
-    "@types/react-redux": "^4.4.40",
-    "@types/react-router-dom": "^4.0.4",
-    "@types/react-tap-event-plugin": "0.0.30",
-    "@types/react-transition-group": "^1.1.0",
-    "@types/uuid": "^2.0.29",
     "attr-accept": "^1.1.0",
     "material-ui": "^0.18.1",
     "react": "^15.5.4",
@@ -38,8 +25,19 @@
     "uuid": "^3.0.1"
   },
   "devDependencies": {
+    "@types/material-ui": "^0.17.7",
+    "@types/react": "^15.0.23",
+    "@types/react-copy-to-clipboard": "^4.2.2",
+    "@types/react-dom": "^15.5.0",
+    "@types/react-dropzone": "0.0.32",
+    "@types/react-redux": "^4.4.40",
+    "@types/react-router-dom": "^4.0.4",
+    "@types/react-tap-event-plugin": "0.0.30",
+    "@types/react-transition-group": "^1.1.0",
+    "@types/uuid": "^2.0.29",
     "awesome-typescript-loader": "^3.1.2",
     "source-map-loader": "^0.2.1",
-    "typescript": "^2.3.1"
+    "typescript": "^2.4.2",
+    "webpack": "^3.4.1"
   }
 }
