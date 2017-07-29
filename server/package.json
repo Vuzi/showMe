@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@types/mkdirp": "^0.5.0",
     "body-parser": "~1.17.1",
     "config": "^1.26.1",
     "cookie-parser": "~1.4.3",
@@ -16,6 +17,7 @@
     "express-session": "^1.15.2",
     "google-auth-library": "^0.10.0",
     "mime-types": "^2.1.15",
+    "mkdirp": "^0.5.1",
     "morgan": "~1.8.1",
     "pg": "^6.1.5",
     "serve-favicon": "~2.4.2",

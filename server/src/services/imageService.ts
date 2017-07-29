@@ -7,8 +7,6 @@ import { fail } from '../utils/error'
 import { NOT_FOUND, URL_ALREADY_EXISTS } from '../utils/errorCode'
 
 export function create(user: User, image: Image): Promise<Image> {
-	console.log(image) // TODO remove
-
 	// TODO handle private pictures ? or shared between users ?
 	return db.pool.connect().then((client) => {
 		return client.query(`

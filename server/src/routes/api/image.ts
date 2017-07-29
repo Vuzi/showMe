@@ -5,6 +5,7 @@ import * as mime from 'mime-types'
 import * as path from 'path'
 import * as sharp from 'sharp'
 import * as uuid from 'uuid'
+import * as mkdirp from 'mkdirp'
 import { needAuth } from './login'
 import { Image } from '../../models/image'
 import * as ImageService from '../../services/imageService'
@@ -14,8 +15,11 @@ import { FILENAME_INVALID, IMAGE_NOT_FOUND } from '../../utils/errorCode'
 const router = Express.Router()
 
 // TODO externalise
-const storagePath = path.join(__dirname, '/../../../', config.get<string>('storage.images'))
-const storagePathThumbnail = path.join(__dirname, '/../../../', config.get<string>('storage.thumbnails'))
+const storagePath = path.join(__dirname, '/../../../', config.get<string>('storage.images'), './')
+const storagePathThumbnail = path.join(__dirname, '/../../../', config.get<string>('storage.thumbnails'), './')
+
+mkdirp.sync(storagePath)
+mkdirp.sync(storagePathThumbnail)
 
 // Download an image
 router.get('/raw/:filename(*)', (req, res, next) => {
