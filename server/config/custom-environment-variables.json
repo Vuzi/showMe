@@ -1,0 +1,18 @@
+{
+	"google": {
+		"clientId": "GOOGLE_API_KEY"
+	},
+	"db": {
+		"config": {
+			"user": "POSTGRES_USER",
+			"database": "POSTGRES_DB",
+			"password": "POSTGRES_PASSWORD",
+			"host": "POSTGRES_HOST",
+			"port": "POSTGRES_PORT"
+		}
+	},
+	"storage": {
+		"images": "IMAGE_PATH",
+		"thumbnails": "IMAGE_THUMBNAILS_PATH"
+	}
+}
