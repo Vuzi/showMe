@@ -3,8 +3,11 @@ import * as GoogleAuth from 'google-auth-library'
 import * as pg from 'pg'
 import db from './postgre'
 import { User } from '../models/user'
+import logger from '../utils/logger'
 
 const clientId = config.get('google.clientId')
+
+logger.info("Using %s as the google API key", clientId)
 
 /**
  * List all the users in the database

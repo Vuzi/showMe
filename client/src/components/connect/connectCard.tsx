@@ -86,7 +86,7 @@ export class ConnectCard extends React.Component<Props, State> {
 										key='googleAuth'
 										ref={(input: any) => this.googleElement = input}
 										disabled={this.props.login.connecting}
-										clientId='44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com'
+										clientId={process.env.GOOGLE_API_KEY}
 										buttonText="Login with Google"
 										onSuccess={(event: any) => this.responseGoogle(event)}
 										onFailure={() => this.showError()}
