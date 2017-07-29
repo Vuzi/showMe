@@ -129,7 +129,9 @@ router.post('/:url', needAuth, (req, res, next) => {
 		.on('finish', onEnd)
 		.on('error', (err) => {
 			fs.unlink(filePath, () => {
-				next(reject(500, err))
+				fs.unlink(fileThumbnailPath, () => {
+					next(reject(500, err))
+				})
 			})
 		})
 	})
