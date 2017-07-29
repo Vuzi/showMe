@@ -1,5 +1,7 @@
 import * as winston from 'winston'
 import * as config from 'config'
+import * as path from 'path'
+import * as mkdirp from 'mkdirp'
 
 interface LoggerConf {
   file: winston.FileTransportInstance[]
@@ -9,6 +11,7 @@ interface LoggerConf {
 const conf = config.get<LoggerConf>('log')
 
 const fileConf = conf.file.map(c => {
+  mkdirp.sync(path.dirname(c.filename))
   return new winston.transports.File(c)
 })
 
@@ -22,10 +25,3 @@ const logger = new winston.Logger({
 
 export default logger
 
-/*
-module.exports = logger
-module.exports.stream = {
-    write: function(message, encoding){
-        logger.info(message);
-    }
-}*/
