@@ -13,6 +13,27 @@
 			"idleTimeoutMillis": 30000
 		}
 	},
+	"log": {
+		"file": [
+			{
+				"level": "info",
+				"filename": "./logs/showme.log",
+				"handleExceptions": true,
+				"json": true,
+				"maxsize": 5242880, //5MB
+				"maxFiles": 5,
+				"colorize": false
+			}
+		],
+		"console": [
+			{
+				"level": "debug",
+				"handleExceptions": true,
+				"json": false,
+				"colorize": true
+			}
+		]
+	},
 	"storage": {
 		"images": "images",
 		"thumbnails": "images/thumbnails"
