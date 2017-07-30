@@ -7,6 +7,7 @@ import * as sharp from 'sharp'
 import * as uuid from 'uuid'
 import * as mkdirp from 'mkdirp'
 import { needAuth } from './login'
+import logger from '../../utils/logger'
 import { Image } from '../../models/image'
 import * as ImageService from '../../services/imageService'
 import { Exception, reject } from '../../utils/error'
@@ -20,6 +21,9 @@ const storagePathThumbnail = path.join(__dirname, '/../../../', config.get<strin
 
 mkdirp.sync(storagePath)
 mkdirp.sync(storagePathThumbnail)
+
+logger.info('Storing images into %s', storagePath)
+logger.info('Storing images\' thumbnails into %s', storagePathThumbnail)
 
 // Download an image
 router.get('/raw/:filename(*)', (req, res, next) => {

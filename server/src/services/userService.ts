@@ -47,6 +47,13 @@ export function register(token: string): Promise<User> {
 						email : payload.email
 					}
 
+					// Filter the user's email
+					const auth = config.get<string>('auth')
+					if(auth !== '*' && auth.split(';').filter(a => a === user.email).length === 0) {
+						reject('User not authorized')
+						return
+					}
+
 					db.pool.query(
 						`INSERT INTO account(
 							id,

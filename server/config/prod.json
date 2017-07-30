@@ -2,6 +2,7 @@
 	"google": {
 		"clientId": "<key>"
 	},
+	"auth" : "*",
 	"db": {
 		"config": {
 			"user": "postgres",
