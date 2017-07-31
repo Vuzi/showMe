@@ -2,7 +2,12 @@
 	"google": {
 		"clientId": "GOOGLE_API_KEY"
 	},
-	"auth": "RESTRICTED_AUTH",
+	"auth" : {
+		"restricted" : "RESTRICTED_AUTH",
+		"cookie" : {
+			"secret": "COOKIE_SECRET"
+		}
+	},
 	"db": {
 		"config": {
 			"user": "POSTGRES_USER",

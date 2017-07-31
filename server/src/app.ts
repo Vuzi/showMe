@@ -1,4 +1,5 @@
 import * as bodyParser from 'body-parser'
+import * as config from 'config'
 import * as cookieParser from 'cookie-parser'
 import * as Express from 'express'
 import * as session from 'express-session'
@@ -14,23 +15,25 @@ logger.info('Show me app started')
 
 const app = Express()
 
+// Set the logger
 app.use(morgan(app.get('env'), { stream: {
     write: (message: string) => {
       logger.info(message.trim());
     }
 	}
 }))
+
+// Parsers
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
+
+// Serves the public directory
 app.use(Express.static(path.join(__dirname, '../public')))
-app.use(session({
-	secret: 'thisismylittlesecret!',
-	cookie: { maxAge: 6000000 },
-	rolling: true,
-	resave: true,
-	saveUninitialized: false
-}))
+
+// Set the cookie configuration
+const cookieConf = config.get<session.SessionOptions>('auth.cookie')
+app.use(session(cookieConf))
 
 // Api
 app.use('/api/', apiEndpoint)

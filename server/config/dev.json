@@ -2,7 +2,19 @@
 	"google": {
 		"clientId": "44077302857-hukep14pmirdvcth0utgetfpjmi8rjo7.apps.googleusercontent.com"
 	},
-	"auth" : "*",
+	"auth" : {
+		"restricted" : "*",
+		"cookie" : {
+			"secret": "thisismylittlesecret!",
+			"cookie": {
+				"maxAge": 600000, // 10mn
+				"secure": false
+			},
+			"rolling": true,
+			"resave": true,
+			"saveUninitialized": false
+		}
+	},
 	"db": {
 		"config": {
 			"user": "postgres",

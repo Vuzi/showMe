@@ -48,7 +48,7 @@ export function register(token: string): Promise<User> {
 					}
 
 					// Filter the user's email
-					const auth = config.get<string>('auth')
+					const auth = config.get<string>('auth.restricted')
 					if(auth !== '*' && auth.split(';').filter(a => a === user.email).length === 0) {
 						reject('User not authorized')
 						return

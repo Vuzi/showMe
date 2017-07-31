@@ -1,8 +1,20 @@
 {
 	"google": {
-		"clientId": "<key>"
+		"clientId": "<clientId>"
 	},
-	"auth" : "*",
+	"auth" : {
+		"restricted" : "*",
+		"cookie" : {
+			"secret": "<secret>",
+			"cookie": {
+				"maxAge": 3000000000, // 34j
+				"secure": true
+			},
+			"rolling": true,
+			"resave": true,
+			"saveUninitialized": false
+		}
+	},
 	"db": {
 		"config": {
 			"user": "postgres",
