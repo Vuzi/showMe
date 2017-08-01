@@ -27,13 +27,13 @@ export class Uploader extends React.Component<Props, {}> {
 
 	render() {
 		return <div>
-				<UploadCard onDroppedFile={this.props.onDroppedFile} />
 				<UploadFileCards
 					images={this.props.images}
 					onRemoveImage={this.props.onRemoveImage}
 					onUploadImage={this.props.onUploadImage}
 					onEditImage={this.props.onEditImage}
 				/>
+				<UploadCard onDroppedFile={this.props.onDroppedFile} />
 			</div>
 	}
 

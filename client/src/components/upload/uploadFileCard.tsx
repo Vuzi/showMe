@@ -85,7 +85,7 @@ export class UploadFileCard extends React.Component<Props, State> {
     const fileURL = window.URL.createObjectURL(file)
 
 		const cardStyle: React.CSSProperties = {
-			marginTop: '15px'
+			marginBottom: '20px'
 		}
 
 		const loaderStyle: React.CSSProperties = {
@@ -140,108 +140,108 @@ export class UploadFileCard extends React.Component<Props, State> {
 		// Prepare URL
 		const textFieldUrl = uploaded ? <UrlTextField url={imageUrl(image)} /> : <span key='no-url' />
 
-		return <div>
-				<PaperHoverable>
-					<Card style={cardStyle}>
-					<CardTitle title={image.title} subtitle={file.type}>
+		return (
+			<Card style={cardStyle}>
+				<CardTitle title={image.title} subtitle={file.type}>
+					<CSSTransitionGroup
+						transitionName='uploadCardUpload'
+						transitionEnterTimeout={300}
+						transitionEnter={true}
+						transitionLeaveTimeout={300}
+						transitionLeave={true}
+					>
+						{ badge }
+					</CSSTransitionGroup>
+				</CardTitle>
+
+				<CardMedia>
+					{ media }
+					{ progress }
+				</CardMedia>
+
+				<CardText>
+					<CSSTransitionGroup
+						transitionName='uploadCardUpload'
+						transitionEnterTimeout={300}
+						transitionEnter={true}
+						transitionLeaveTimeout={300}
+						transitionLeave={true}
+					>
+						{ textFieldUrl }
+					</CSSTransitionGroup>
+					<TextField
+						defaultValue={image.title}
+						floatingLabelText='Image title'
+						fullWidth={true}
+						disabled={uploading || uploaded}
+						onChange={(_, newValue: string) => this.onChangeTitle(newValue)}
+					/><br/>
+					<TextField
+						defaultValue={image.url}
+						floatingLabelText='Image URL'
+						fullWidth={true}
+						errorText={ error ? (error.code === 'URL_ALREADY_EXISTS' ? error.message : undefined) : undefined /* TODO helper */ }
+						disabled={uploading || uploaded}
+						onChange={(_, newValue: string) => this.onChangeURL(newValue)}
+					/><br/>
+
+					<TextField
+						floatingLabelText='Tags'
+						fullWidth={true}
+						onKeyPress={(event) => {
+							if (event.nativeEvent.key === 'Enter' && tag.length > 0) {
+								this.onChangeTags(image.tags.concat([ tag ])) // Add the validated tag
+								this.setState({ tag : '' })
+							}
+						}}
+						disabled={uploading || uploaded}
+						rows={1}
+						value={this.state.tag}
+						onChange={(_, newValue: string) => this.setState({ tag : newValue })}
+					/><br />
+
+					<div>
 						<CSSTransitionGroup
-							transitionName='uploadCardUpload'
+							transitionName='uploadCardTag'
 							transitionEnterTimeout={300}
 							transitionEnter={true}
 							transitionLeaveTimeout={300}
 							transitionLeave={true}
+							style={{ display: 'flex', flexWrap: 'wrap' }}
 						>
-							{ badge }
+							{
+								image.tags.map((tag, index) => {
+									return <Chip
+											key={`tag-${tag}`}
+											style={{ marginRight: '5px', marginTop: '3px' }}
+											onRequestDelete={() => {
+												this.onChangeTags(image.tags.filter((tagToTest) => tagToTest !== tag))
+											}}
+										>
+											{tag}
+										</Chip>
+								})
+							}
 						</CSSTransitionGroup>
-					</CardTitle>
-					<CardMedia>
-						{ media }
-						{ progress }
-					</CardMedia>
-					<CardText>
-						<CSSTransitionGroup
-							transitionName='uploadCardUpload'
-							transitionEnterTimeout={300}
-							transitionEnter={true}
-							transitionLeaveTimeout={300}
-							transitionLeave={true}
-						>
-							{ textFieldUrl }
-						</CSSTransitionGroup>
-						<TextField
-							defaultValue={image.title}
-							floatingLabelText='Image title'
-							fullWidth={true}
-							disabled={uploading || uploaded}
-							onChange={(_, newValue: string) => this.onChangeTitle(newValue)}
-						/><br/>
-						<TextField
-							defaultValue={image.url}
-							floatingLabelText='Image URL'
-							fullWidth={true}
-							errorText={ error ? (error.code === 'URL_ALREADY_EXISTS' ? error.message : undefined) : undefined /* TODO helper */ }
-							disabled={uploading || uploaded}
-							onChange={(_, newValue: string) => this.onChangeURL(newValue)}
-						/><br/>
+					</div>
+				</CardText>
 
-						<TextField
-							floatingLabelText='Tags'
-							fullWidth={true}
-							onKeyPress={(event) => {
-								if (event.nativeEvent.key === 'Enter' && tag.length > 0) {
-									this.onChangeTags(image.tags.concat([ tag ])) // Add the validated tag
-									this.setState({ tag : '' })
-								}
-							}}
-							disabled={uploading || uploaded}
-							rows={1}
-							value={this.state.tag}
-							onChange={(_, newValue: string) => this.setState({ tag : newValue })}
-						/><br />
-
-						<div>
-							<CSSTransitionGroup
-								transitionName='uploadCardTag'
-								transitionEnterTimeout={300}
-								transitionEnter={true}
-								transitionLeaveTimeout={300}
-								transitionLeave={true}
-								style={{ display: 'flex', flexWrap: 'wrap' }}
-							>
-								{
-									image.tags.map((tag, index) => {
-										return <Chip
-												key={`tag-${tag}`}
-												style={{ marginRight: '5px', marginTop: '3px' }}
-												onRequestDelete={() => {
-													this.onChangeTags(image.tags.filter((tagToTest) => tagToTest !== tag))
-												}}
-											>
-												{tag}
-											</Chip>
-									})
-								}
-							</CSSTransitionGroup>
-						</div>
-
-					</CardText>
-					<CardActions>
-						<RaisedButton
-							label='Upload'
-							onClick={() => this.props.onUpload()}
-							disabled={uploading || uploaded}
-							backgroundColor='#002e7a'
-							labelColor='#ffffff'
-						/>
-						<FlatButton
-							label='Remove'
-							onClick={() => this.props.onRemove()}
-							disabled={uploading}
-						/>
-					</CardActions>
-				</Card>
-			</PaperHoverable>
-		</div>
+				<CardActions>
+					<RaisedButton
+						label='Upload'
+						onClick={() => this.props.onUpload()}
+						disabled={uploading || uploaded}
+						backgroundColor='#002e7a'
+						labelColor='#ffffff'
+					/>
+					<FlatButton
+						label='Remove'
+						onClick={() => this.props.onRemove()}
+						disabled={uploading}
+					/>
+				</CardActions>
+			</Card>
+		)
 	}
 
 }

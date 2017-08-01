@@ -132,11 +132,18 @@ export class GalleryDetail extends React.Component<{ image: Image }, { open: boo
 			</div>
 		</div> : <div />
 
+		// Fix to force dialog position
+		const dialogStyles: React.CSSProperties = {
+			marginTop: '-50px'
+		}
+
 		return <Dialog
 				actions={actions}
 				modal={false}
 				open={open}
+				contentStyle={ dialogStyles }
 				bodyStyle={{ padding: 0 }}
+				repositionOnUpdate={false}
 				onRequestClose={() => this.close()}
 			>
 				<Card>
@@ -263,8 +270,8 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 		const loadingIcon = <CircularProgress key='loading' size={20} thickness={3} color={'#002e7a'} style={searchIconStyle} />
 		const gallerySearch = <GallerySearch onChange={(value) => this.filter(value)} icon={loading ? loadingIcon : searchIcon} />
 
-		return <div>
-			<PaperHoverable default={1} >
+		return (
+			<div>
 				<Card>
 					{ gallerySearch }
 					<Divider />
@@ -274,9 +281,9 @@ export class Gallery extends React.Component<Props, { selectedImage: number }> {
 							}
 					</CardText>
 				</Card>
-			</PaperHoverable>
-			{ dialog }
-		</div>
+				{ dialog }
+			</div>
+		)
 	}
 
 }

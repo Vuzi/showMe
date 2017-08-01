@@ -65,7 +65,7 @@ export class ConnectCard extends React.Component<Props, State> {
 			const redirectToFixed = redirectTo ? redirectTo.indexOf('/login') === 0 ? '/upload' : redirectTo : '/upload'
 			return <Redirect to={ redirectToFixed } />
 		} else
-			return <PaperHoverable>
+			return (
 				<Card className="login-card">
 					<CardTitle titleColor='grey' />
 					<CardText style={{ textAlign: 'center' }}>
@@ -110,7 +110,7 @@ export class ConnectCard extends React.Component<Props, State> {
 						onRequestClose={() => this.hideError()}
 					/>
 				</Card>
-			</PaperHoverable>
+			)
 	}
 
 }

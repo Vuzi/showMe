@@ -4,6 +4,9 @@
 		<meta charset="UTF-8" />
 		<title>Show Me | Image uploader</title>
 
+		<!-- Mobile version -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 		<!-- Font -->
 		<link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
 
@@ -25,6 +28,10 @@
 				cursor: pointer;
 			}
 
+			.dialog-root {
+				padding-top: '0' !important;
+			}
+
 			/** Gallery animations **/
 			.gallery-image {
 				transition: all 0.3s;
@@ -37,7 +44,7 @@
 			/** Upload card animations **/
 			.uploadCardFile-enter {
 				opacity: 0.01;
-				transform: translateY(-300px) scale(0.8);
+				transform: /*translateY(-300px)*/ scale(0.8);
 			}
 
 			.uploadCardFile-enter.uploadCardFile-enter-active {

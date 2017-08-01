@@ -33,11 +33,11 @@ export class UploadFileCards extends React.Component<Props, {}> {
 		const style: React.CSSProperties = {
 			maxWidth: '700px',
 			margin: 'auto',
-			marginTop: '15px'
+			marginTop: '20px'
 		}
 
 		const lastCardStyle: React.CSSProperties = {
-			marginTop: '15px'
+			marginBottom: '20px'
 		}
 
 		const fileCards = this.props.images.map((image) => {
@@ -63,27 +63,29 @@ export class UploadFileCards extends React.Component<Props, {}> {
 		})
 
 		if (fileCards.length > 1) {
-			fileCards.push(<PaperHoverable style={lastCardStyle} key='0'>
-					<Card>
-						<CardActions >
-							<RaisedButton label="Upload All" primary={true} />
-							<FlatButton label="Clear" onClick={() => this.onClear()} />
-						</CardActions>
-					</Card>
-				</PaperHoverable>)
+			fileCards.push(
+				<Card style={lastCardStyle} key='0'>
+					<CardActions >
+						<FlatButton label="Clear" onClick={() => this.onClear()} />
+					</CardActions>
+				</Card>
+			)
 		}
 
-		return <div style={style}>
-			<CSSTransitionGroup
-				transitionName="uploadCardFile"
-				transitionEnterTimeout={300}
-				transitionLeaveTimeout={300}
-				transitionEnter={true}
-				transitionLeave={true}
-			>
-				{ fileCards }
-			</CSSTransitionGroup>
-		</div>
+		return (
+			<div style={style}>
+				<CSSTransitionGroup
+					transitionName="uploadCardFile"
+					transitionEnterTimeout={300}
+					transitionLeaveTimeout={300}
+					transitionEnter={true}
+					transitionLeave={true}
+				>
+					{ fileCards }
+				</CSSTransitionGroup>
+			</div>
+		)
+
 	}
 
 }

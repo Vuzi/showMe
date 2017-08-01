@@ -10,10 +10,10 @@ export class Title extends React.Component<{}, undefined> {
 	render() {
 		const titleStyle: React.CSSProperties = {
 			fontFamily: 'Amatic SC',
-			fontSize: '160px',
+			fontSize: '130px',
 			fontWeight: 'normal',
-			marginBottom: '21px',
-			marginTop: '10px'
+			marginBottom: '10px',
+			marginTop: '5px'
 		}
 
 		const titleDetailStyle: React.CSSProperties = {

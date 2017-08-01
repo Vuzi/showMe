@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "attr-accept": "^1.1.0",
-    "material-ui": "^0.18.1",
+    "material-ui": "^0.18.7",
     "react": "^15.5.4",
     "react-copy-to-clipboard": "^5.0.0",
     "react-dom": "^15.5.4",

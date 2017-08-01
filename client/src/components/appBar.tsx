@@ -58,8 +58,7 @@ export class AppBar extends React.Component<Props, { selectedIndex: number }> {
       marginBottom: '15px'
     }
 
-		return <div>
-      <PaperHoverable style={style} default={1}>
+		return <Paper zDepth={1} style={style} >
         <BottomNavigation selectedIndex={this.state.selectedIndex}>
           {
             this.props.tabs.map((tab, i) => {
@@ -72,8 +71,7 @@ export class AppBar extends React.Component<Props, { selectedIndex: number }> {
             })
           }
         </BottomNavigation>
-      </PaperHoverable>
-    </div>
+      </Paper>
 	}
 
 }
