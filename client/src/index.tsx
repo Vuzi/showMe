@@ -8,12 +8,12 @@ import { Provider } from 'react-redux'
 import { connect } from 'react-redux'
 import {
   BrowserRouter as Router,
+  RouteComponentProps,
   Link,
+  Redirect,
   Route,
   Switch
   } from 'react-router-dom'
-import { Redirect } from 'react-router-dom'
-import { RouteComponentProps } from 'react-router-dom'
 import * as injectTapEventPlugin from 'react-tap-event-plugin'
 import { applyMiddleware, createStore } from 'redux'
 import thunkMiddleware from 'redux-thunk'
@@ -48,7 +48,6 @@ class RequireAuthElement extends React.Component<RequireAuthElementProps, {}> {
   componentDidMount() {
     // Test if we need to test the connecion
     if(!this.props.connected && !this.props.connecting) {
-      console.log(`needs to test login ! => `)
       this.props.testLogin()
     }
   }
@@ -72,7 +71,7 @@ const RequireAuthRedux = connect((state: { upload: UploadState, login: LoginStat
       dispatch(loginTest(ownProps.redirectTo))
     }
   }
-})(RequireAuthElement as any) // Makes TS 2.4 happy
+})(RequireAuthElement)
 
 const RequireAuth = (props: { redirectTo: string, children?: JSX.Element }) => {
   return (<Provider store={store}>
@@ -122,9 +121,11 @@ const AppContent = (props: RouteComponentProps<any>) => (
             }
           ]
         } current={props.location.pathname} />
-      <Route path='/upload' component={ Upload }/>
-      <Route path='/gallery' component={ Gallery }/>
-      <Route path='/logout' component={ () => <h1>Log out TODO</h1> }/>
+      <Switch>
+        <Route path='/gallery' component={ Gallery }/>
+        <Route path='/logout' component={ () => <h1>Log out TODO</h1> }/>
+        <Route component={ Upload }/>
+      </Switch>
     </div>
   </RequireAuth>
 )
