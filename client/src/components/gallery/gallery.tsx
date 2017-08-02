@@ -134,7 +134,10 @@ export class GalleryDetail extends React.Component<{ image: Image }, { open: boo
 
 		// Fix to force dialog position
 		const dialogStyles: React.CSSProperties = {
-			marginTop: '-50px'
+			position: 'absolute',
+			left: '50%',
+			top: '50%',
+			transform: 'translate(-50%, -50%)'
 		}
 
 		return <Dialog
